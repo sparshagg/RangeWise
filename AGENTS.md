@@ -1,0 +1,19 @@
+# AGENTS
+
+## Purpose
+- Build and maintain the Smart EV Range Predictor as a university project focused on fuzzy logic under UAE driving conditions.
+- Prefer explainability, clean demos, and strong documentation over advanced production features.
+
+## Working Rules
+- Start substantial tasks with a short plan or checklist update before coding.
+- Keep `.codex/plans/project-checklist.md` current before and after each milestone.
+- Do not expand scope beyond the agreed classroom demo without explicit approval.
+- Use milestone-sized commits with clear messages after meaningful completed changes.
+- Keep docs aligned with code; update the README and relevant docs whenever behavior changes.
+
+## Project Constraints
+- Local-first Streamlit app only.
+- Fuzzy logic is the primary intelligence layer.
+- Dataset analysis supports the demo; it is not a separate ML pipeline.
+- Model behavior should remain presentation-friendly and easy to justify in class.
+
