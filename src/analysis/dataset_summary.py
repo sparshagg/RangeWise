@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from src.config import DRIVING_MODE_LABELS, TRAFFIC_CONDITION_LABELS
+from src.config import DATASET_DRIVING_MODE_LABELS, DATASET_TRAFFIC_CONDITION_LABELS
 from src.data.preprocessing import add_uae_condition_labels, dataset_overview
 
 
@@ -22,12 +22,14 @@ def build_dataset_summary(df: pd.DataFrame) -> dict[str, object]:
     if "driving_mode" in enriched.columns:
         mode = enriched["driving_mode"].mode(dropna=True)
         if not mode.empty:
-            summary["top_driving_mode"] = DRIVING_MODE_LABELS.get(int(mode.iloc[0]), str(mode.iloc[0]))
+            summary["top_driving_mode"] = DATASET_DRIVING_MODE_LABELS.get(
+                int(mode.iloc[0]), str(mode.iloc[0])
+            )
 
     if "traffic_level" in enriched.columns:
         mode = enriched["traffic_level"].mode(dropna=True)
         if not mode.empty:
-            summary["top_traffic_condition"] = TRAFFIC_CONDITION_LABELS.get(
+            summary["top_traffic_condition"] = DATASET_TRAFFIC_CONDITION_LABELS.get(
                 int(mode.iloc[0]), str(mode.iloc[0])
             )
 

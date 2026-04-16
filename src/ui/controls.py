@@ -4,18 +4,24 @@ from dataclasses import dataclass
 
 import streamlit as st
 
-from src.config import DRIVING_MODE_LABELS, TRAFFIC_CONDITION_LABELS
+from src.config import (
+    AC_LEVEL_VALUES,
+    DRIVING_MODE_LEVEL_VALUES,
+    SPEED_LEVEL_VALUES,
+    TEMPERATURE_LEVEL_VALUES,
+    TRAFFIC_LEVEL_VALUES,
+)
 
 
 @dataclass
 class UserInputs:
     manufacturer_range_km: float
     battery_pct: float
-    temperature_c: float
-    ac_intensity: float
-    speed_kmh: float
-    driving_mode: float
-    traffic_condition: float
+    temperature_level: str
+    ac_level: str
+    speed_level: str
+    driving_mode: str
+    traffic_level: str
 
 
 def render_sidebar_controls() -> UserInputs:
@@ -28,28 +34,42 @@ def render_sidebar_controls() -> UserInputs:
         step=10.0,
     )
     battery_pct = st.sidebar.slider("Battery Percentage", 0, 100, 80)
-    temperature_c = st.sidebar.slider("Ambient Temperature (C)", 10, 55, 35)
-    ac_intensity = st.sidebar.slider("AC Intensity", 0, 10, 6)
-    speed_kmh = st.sidebar.slider("Vehicle Speed (km/h)", 0, 120, 60)
+    temperature_level = st.sidebar.select_slider(
+        "Temperature",
+        options=list(TEMPERATURE_LEVEL_VALUES.keys()),
+        value="Hot",
+    )
+    ac_level = st.sidebar.select_slider(
+        "AC Intensity",
+        options=list(AC_LEVEL_VALUES.keys()),
+        value="Medium",
+    )
+    speed_level = st.sidebar.select_slider(
+        "Speed",
+        options=list(SPEED_LEVEL_VALUES.keys()),
+        value="City",
+    )
     driving_mode = st.sidebar.select_slider(
         "Driving Mode",
-        options=list(DRIVING_MODE_LABELS.keys()),
-        value=2,
-        format_func=lambda value: DRIVING_MODE_LABELS[value],
+        options=list(DRIVING_MODE_LEVEL_VALUES.keys()),
+        value="Comfort",
     )
-    traffic_condition = st.sidebar.select_slider(
+    traffic_level = st.sidebar.select_slider(
         "Traffic Condition",
-        options=list(TRAFFIC_CONDITION_LABELS.keys()),
-        value=2,
-        format_func=lambda value: TRAFFIC_CONDITION_LABELS[value],
+        options=list(TRAFFIC_LEVEL_VALUES.keys()),
+        value="Moderate",
     )
+
+    st.sidebar.caption(f"Representative temperature: {TEMPERATURE_LEVEL_VALUES[temperature_level]}C")
+    st.sidebar.caption(f"Representative AC load: {AC_LEVEL_VALUES[ac_level]}/10")
+    st.sidebar.caption(f"Representative speed: {SPEED_LEVEL_VALUES[speed_level]} km/h")
 
     return UserInputs(
         manufacturer_range_km=manufacturer_range_km,
         battery_pct=float(battery_pct),
-        temperature_c=float(temperature_c),
-        ac_intensity=float(ac_intensity),
-        speed_kmh=float(speed_kmh),
-        driving_mode=float(driving_mode),
-        traffic_condition=float(traffic_condition),
+        temperature_level=temperature_level,
+        ac_level=ac_level,
+        speed_level=speed_level,
+        driving_mode=driving_mode,
+        traffic_level=traffic_level,
     )

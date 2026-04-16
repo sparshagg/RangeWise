@@ -7,11 +7,11 @@ def test_build_dashboard_payload_returns_expected_keys() -> None:
         UserInputs(
             manufacturer_range_km=450,
             battery_pct=85,
-            temperature_c=35,
-            ac_intensity=6,
-            speed_kmh=65,
-            driving_mode=2,
-            traffic_condition=2,
+            temperature_level="Hot",
+            ac_level="Medium",
+            speed_level="City",
+            driving_mode="Comfort",
+            traffic_level="Moderate",
         )
     )
 

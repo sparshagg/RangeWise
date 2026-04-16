@@ -4,16 +4,49 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATASET_PATH = PROJECT_ROOT / "data" / "raw" / "EV_Energy_Consumption_Dataset.csv"
 
-DRIVING_MODE_LABELS = {
+TEMPERATURE_LEVEL_VALUES = {
+    "Pleasant": 24.0,
+    "Hot": 34.0,
+    "Very Hot": 43.0,
+    "Extremely Hot": 52.0,
+}
+
+AC_LEVEL_VALUES = {
+    "Low": 2.0,
+    "Medium": 5.0,
+    "High": 8.0,
+}
+
+SPEED_LEVEL_VALUES = {
+    "Local": 45.0,
+    "City": 60.0,
+    "Highway": 110.0,
+    "Fast Highway": 135.0,
+    "Extreme Highway": 155.0,
+}
+
+DRIVING_MODE_LEVEL_VALUES = {
+    "Eco": 1.1,
+    "Comfort": 2.0,
+    "Sport": 2.9,
+}
+
+TRAFFIC_LEVEL_VALUES = {
+    "No Traffic": 1.1,
+    "Moderate": 2.0,
+    "High": 2.9,
+}
+
+DATASET_DRIVING_MODE_LABELS = {
     1: "Eco",
-    2: "Normal",
+    2: "Comfort",
     3: "Sport",
 }
 
-TRAFFIC_CONDITION_LABELS = {
-    1: "Light",
+DATASET_TRAFFIC_CONDITION_LABELS = {
+    1: "No Traffic",
     2: "Moderate",
-    3: "Heavy",
+    3: "High",
 }
 
 EXPECTED_COLUMNS = {

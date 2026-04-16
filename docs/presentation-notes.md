@@ -11,13 +11,14 @@ Standard EV range displays can feel simplistic because they often do not reflect
 ## Demo Story
 1. Start with a nominal manufacturer range.
 2. Apply battery percentage to show the naive baseline.
-3. Increase heat and AC load to represent UAE conditions.
-4. Increase speed and switch to sport mode to show a sharper range drop.
-5. Increase traffic condition to show the extra urban penalty.
+3. Move the temperature from `Pleasant` to `Very Hot` or `Extremely Hot` and increase AC load.
+4. Move the speed from `City` to `Highway` or `Fast Highway`.
+5. Compare `Eco`, `Comfort`, and `Sport`.
+6. Increase traffic from `No Traffic` to `High`.
 6. Show the explanation text and speed-based dataset insights.
 
 ## Key Talking Points
 - Fuzzy logic models gradual transitions between mild, warm, and hot conditions.
 - The system is interpretable because each output comes from understandable rules.
-- The project uses a hybrid design: UAE heat and AC are domain-driven, while speed, driving mode, and traffic condition are dataset-backed.
+- The project uses a hybrid design: UAE heat and AC are domain-driven, while speed is strongly justified by the dataset and the other factors are encoded as explicit fuzzy rules.
 - The project focuses on explainability and academic demonstration rather than production deployment.

@@ -17,7 +17,7 @@ def test_build_dataset_summary_includes_speed_and_labels() -> None:
     summary = build_dataset_summary(df)
     assert summary["avg_speed_kmh"] == 60.0
     assert summary["top_driving_mode"] == "Eco"
-    assert summary["top_traffic_condition"] == "Light"
+    assert summary["top_traffic_condition"] == "No Traffic"
 
 
 def test_build_energy_by_speed_returns_speed_bands() -> None:

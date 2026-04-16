@@ -5,13 +5,14 @@ The fuzzy inference system adjusts EV range for real-world UAE driving condition
 
 ## Modeling Strategy
 - Battery percentage determines the baseline remaining range directly.
-- Fuzzy logic adjusts that baseline using a hybrid set of UAE demo inputs and dataset-backed behavior inputs.
+- Fuzzy logic adjusts that baseline using a linguistic set of UAE demo inputs plus dataset-backed speed justification.
 - The output is a range adjustment factor between strong reduction and near-nominal performance.
 
 ## Hybrid Design Choice
 - `Ambient Temperature` and `AC Intensity` stay as explicit UAE demo inputs because they are central to the classroom problem statement.
-- `Speed`, `Driving Mode`, and `Traffic Condition` are aligned with the Kaggle dataset so the model is not purely hand-waved.
+- `Speed`, `Driving Mode`, and `Traffic Condition` are aligned with the Kaggle dataset for justification, but the app presents them as linguistic fuzzy sets.
 - This keeps the project presentation-friendly while still grounding the model in the available data.
+- The dataset is not UAE-native and has no AC column, so heat and AC remain domain-driven rather than learned directly.
 
 ## Inputs
 ### Battery Percentage
@@ -20,14 +21,16 @@ The fuzzy inference system adjusts EV range for real-world UAE driving condition
 
 ### Ambient Temperature
 UAE-calibrated temperature bands:
-- `Mild`: cooler months and nighttime driving
-- `Warm`: common daytime conditions
-- `Hot`: strong summer heat and harsh urban conditions
+- `Pleasant`: cooler UAE driving conditions
+- `Hot`: common warm daytime conditions
+- `Very Hot`: strong summer heat
+- `Extremely Hot`: harsh peak summer conditions
 
 Suggested operating interpretation:
-- Mild: around `18C to 28C`
-- Warm: around `24C to 40C`
-- Hot: above `36C`, with strongest penalty in the `42C+` range
+- Pleasant: around `20C to 28C`
+- Hot: around `30C to 38C`
+- Very Hot: around `40C to 46C`
+- Extremely Hot: `48C+`
 
 ### AC Intensity
 - `Low`: light cabin cooling
@@ -35,25 +38,29 @@ Suggested operating interpretation:
 - `High`: sustained heavy cooling in hot conditions
 
 ### Speed
-Dataset-driven speed bands:
-- `Urban`: lower-speed city driving
-- `Mixed`: common everyday mixed-speed travel
-- `Highway`: sustained high-speed travel
+UAE-focused speed bands:
+- `Local`: roads around `40-50 km/h`
+- `City`: common urban travel around `60 km/h`
+- `Highway`: common highway travel around `100-120 km/h`
+- `Fast Highway`: high-speed roads around `130-140 km/h`
+- `Extreme Highway`: harsh high-speed scenario around `140-160 km/h`
 
 Suggested operating interpretation:
-- Urban: around `0 to 50 km/h`
-- Mixed: around `40 to 85 km/h`
-- Highway: above `75 km/h`, with strongest penalty near `95+ km/h`
+- Local: around `45 km/h`
+- City: around `60 km/h`
+- Highway: around `110 km/h`
+- Fast Highway: around `135 km/h`
+- Extreme Highway: around `155 km/h`
 
 ### Driving Mode
 - `Eco`: conservative energy-saving mode
-- `Normal`: balanced everyday mode
+- `Comfort`: balanced everyday mode
 - `Sport`: higher-performance mode with stronger energy demand
 
-### Traffic Condition
-- `Light`: open roads
+### Traffic Level
+- `No Traffic`: open roads
 - `Moderate`: normal city flow
-- `Heavy`: stop-and-go urban traffic
+- `High`: stop-and-go urban traffic
 
 ## Output
 ### Adjustment Factor
@@ -64,12 +71,17 @@ Range factor applied to the baseline remaining range:
 - `Near Nominal`
 
 ## Rule Themes
-- Hot weather and strong AC together create major range penalties.
-- High speed and sport mode create strong range penalties.
-- Heavy traffic and high AC add a secondary penalty layer.
-- Mild or warm weather, low AC, eco mode, and light traffic preserve range better.
-- UAE summer-like conditions should show clearly lower adjusted range than mild conditions.
+- Extremely hot weather and high AC create major range penalties.
+- Fast and extreme highway speeds create the strongest speed penalties.
+- Sport mode must reduce range more than Comfort, and Comfort more than Eco.
+- High traffic must reduce range more than Moderate, and Moderate more than No Traffic.
+- Pleasant weather, low AC, local or city speeds, Eco mode, and No Traffic should preserve range best.
 - Dataset-backed speed behavior should be visible in both the rules and the insight panel.
+
+## Robustness Rules
+- Every selectable UI value must belong to at least one fuzzy set.
+- Every selectable combination must activate at least one rule path to the output.
+- The rule base includes broad fallback coverage so defuzzification never returns a missing output.
 
 ## Why This Fits The Course
 - Uses fuzzy sets and linguistic rules rather than fixed thresholds

@@ -1,6 +1,6 @@
 # Smart EV Range Predictor
 
-Smart EV Range Predictor is a university project that estimates how far an electric vehicle can travel under realistic UAE driving conditions. Instead of relying on a simple battery-percentage calculation, the app combines battery state with a fuzzy logic adjustment layer that reacts to ambient heat, AC intensity, speed, driving mode, and traffic condition.
+Smart EV Range Predictor is a university project that estimates how far an electric vehicle can travel under realistic UAE driving conditions. Instead of relying on a simple battery-percentage calculation, the app combines battery state with a fuzzy logic adjustment layer that reacts to linguistic UAE conditions such as pleasant or extremely hot weather, AC load, speed class, driving mode, and traffic level.
 
 ## Project Scope
 - Local Streamlit app for class demonstration
@@ -66,10 +66,10 @@ streamlit run src/app.py
 Open the local Streamlit URL printed in the terminal. The dashboard lets you:
 - enter the manufacturer-rated EV range
 - set battery percentage
-- model UAE temperature conditions
-- adjust AC intensity, vehicle speed, driving mode, and traffic condition
+- choose fuzzy UAE temperature levels such as `Pleasant`, `Hot`, `Very Hot`, and `Extremely Hot`
+- choose fuzzy AC, speed, driving mode, and traffic levels using linguistic labels
 - compare nominal range against fuzzy-adjusted range
-- inspect speed-oriented dataset summary insights
+- inspect speed-oriented dataset summary insights used to justify the fuzzy logic
 
 ## Run Tests
 
@@ -94,7 +94,8 @@ pytest
 ## Demo Narrative
 Use the app in this order during your presentation:
 1. Show the manufacturer range and battery-state baseline.
-2. Change the temperature to a hot UAE scenario and raise AC intensity.
-3. Increase speed and switch from `Eco` to `Sport` mode to demonstrate a sharper range drop.
-4. Increase traffic condition to show the extra penalty from stop-and-go travel.
+2. Switch from `Pleasant` to `Extremely Hot` and raise AC intensity.
+3. Increase speed from `City` to `Highway`, `Fast Highway`, or `Extreme Highway`.
+4. Compare `Eco`, `Comfort`, and `Sport` to show the fuzzy mode penalty.
+5. Increase traffic from `No Traffic` to `High` to show the extra stop-and-go penalty.
 5. Open the dataset insights section to connect the fuzzy logic design back to the speed and energy trends in the data.

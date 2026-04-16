@@ -14,11 +14,11 @@ Build a local Streamlit dashboard that demonstrates how fuzzy logic can produce 
 ## Core Design
 - Baseline remaining range = `manufacturer rated range x battery percentage`
 - Fuzzy adjustment factor responds to:
-  - ambient temperature
-  - AC intensity
-  - speed
+  - UAE temperature level
+  - AC level
+  - UAE speed band
   - driving mode
-  - traffic condition
+  - traffic level
 - Final adjusted range = `baseline remaining range x fuzzy adjustment factor`
 
 ## Scope Boundaries

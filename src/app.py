@@ -23,11 +23,11 @@ def build_dashboard_payload(user_inputs: UserInputs) -> dict[str, object]:
     return predict_adjusted_range(
         manufacturer_range_km=user_inputs.manufacturer_range_km,
         battery_pct=user_inputs.battery_pct,
-        temperature_c=user_inputs.temperature_c,
-        ac_intensity=user_inputs.ac_intensity,
-        speed_kmh=user_inputs.speed_kmh,
+        temperature_level=user_inputs.temperature_level,
+        ac_level=user_inputs.ac_level,
+        speed_level=user_inputs.speed_level,
         driving_mode=user_inputs.driving_mode,
-        traffic_condition=user_inputs.traffic_condition,
+        traffic_level=user_inputs.traffic_level,
     )
 
 
@@ -42,7 +42,7 @@ def main() -> None:
     st.set_page_config(page_title="Smart EV Range Predictor", layout="wide")
     st.title("Smart EV Range Predictor")
     st.write(
-        "Estimate realistic EV range for UAE driving conditions using heat, AC, speed, driving mode, and traffic-aware fuzzy logic."
+        "Estimate realistic EV range for UAE driving conditions using a linguistic fuzzy logic model for heat, AC, speed, driving mode, and traffic."
     )
 
     user_inputs = render_sidebar_controls()
