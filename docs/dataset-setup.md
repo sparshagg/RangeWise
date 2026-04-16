@@ -7,8 +7,13 @@
 ## Expected File Path
 
 ```text
-data/raw/ev_energy_consumption_dataset.csv
+data/raw/EV_Energy_Consumption_Dataset.csv
 ```
+
+## Current Repository State
+- The raw Kaggle CSV is committed to the repository.
+- The loader is aligned with the real file name and the real column names in the dataset.
+- Future preprocessing outputs should live outside `data/raw/`.
 
 ## File Purpose
 The dataset supports:
@@ -28,4 +33,3 @@ The dataset supports:
 - The current app does not require model training.
 - If the CSV is missing, the app still runs and explains how to add it.
 - Keep the original raw file unchanged and place any future cleaned derivatives in a separate folder if needed.
-

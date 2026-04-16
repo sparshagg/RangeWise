@@ -10,8 +10,7 @@
 The application expects the raw dataset file at:
 
 ```text
-data/raw/ev_energy_consumption_dataset.csv
+data/raw/EV_Energy_Consumption_Dataset.csv
 ```
 
-If the CSV is absent, place the downloaded original file there so the analysis section can load it.
-
+The raw CSV is committed to this repository under that path.

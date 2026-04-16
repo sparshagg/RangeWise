@@ -9,11 +9,12 @@
 - Keep `.codex/plans/project-checklist.md` current before and after each milestone.
 - Do not expand scope beyond the agreed classroom demo without explicit approval.
 - Use milestone-sized commits with clear messages after meaningful completed changes.
-- Keep docs aligned with code; update the README and relevant docs whenever behavior changes.
+- Keep docs aligned with code; run `python3 scripts/sync_project_docs.py` whenever repo facts change.
+- Treat `docs/repository-status.md` as generated output and do not hand-edit it.
+- Keep the local git hook path pointed at `.githooks` so doc sync runs before commits.
 
 ## Project Constraints
 - Local-first Streamlit app only.
 - Fuzzy logic is the primary intelligence layer.
 - Dataset analysis supports the demo; it is not a separate ML pipeline.
 - Model behavior should remain presentation-friendly and easy to justify in class.
-

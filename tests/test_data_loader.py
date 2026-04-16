@@ -40,11 +40,11 @@ def test_load_dataset_accepts_valid_dataset(tmp_path: Path) -> None:
     dataset_path = tmp_path / "ev.csv"
     pd.DataFrame(
         {
-            "Speed": [10],
-            "Acceleration": [1.2],
-            "Temperature": [38],
-            "Battery State": [75],
-            "Energy Consumption (kWh)": [15.4],
+            "Speed_kmh": [10],
+            "Acceleration_ms2": [1.2],
+            "Temperature_C": [38],
+            "Battery_State_%": [75],
+            "Energy_Consumption_kWh": [15.4],
         }
     ).to_csv(dataset_path, index=False)
 
@@ -57,3 +57,34 @@ def test_load_dataset_accepts_valid_dataset(tmp_path: Path) -> None:
         "energy_consumption_kwh",
     ]
 
+
+def test_load_dataset_accepts_real_dataset_header_shape(tmp_path: Path) -> None:
+    dataset_path = tmp_path / "ev_real_shape.csv"
+    pd.DataFrame(
+        {
+            "Vehicle_ID": [1102],
+            "Timestamp": ["2024-01-01 00:00:00"],
+            "Speed_kmh": [111.5],
+            "Acceleration_ms2": [-2.7],
+            "Battery_State_%": [30.4],
+            "Battery_Voltage_V": [378.0],
+            "Battery_Temperature_C": [25.3],
+            "Driving_Mode": [2],
+            "Road_Type": [1],
+            "Traffic_Condition": [1],
+            "Slope_%": [6.8],
+            "Weather_Condition": [4],
+            "Temperature_C": [0.7],
+            "Humidity_%": [42.1],
+            "Wind_Speed_ms": [7.8],
+            "Tire_Pressure_psi": [31.1],
+            "Vehicle_Weight_kg": [1822.9],
+            "Distance_Travelled_km": [20.7],
+            "Energy_Consumption_kWh": [12.0],
+        }
+    ).to_csv(dataset_path, index=False)
+
+    loaded = load_dataset(dataset_path)
+    assert "speed" in loaded.columns
+    assert "traffic_level" in loaded.columns
+    assert "distance_travelled_km" in loaded.columns

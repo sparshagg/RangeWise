@@ -25,17 +25,17 @@ Smart EV Range Predictor is a university project that estimates how far an elect
 - `data/`: raw dataset location and provenance notes
 
 ## Dataset
-Expected dataset path:
+Committed dataset path:
 
 ```text
-data/raw/ev_energy_consumption_dataset.csv
+data/raw/EV_Energy_Consumption_Dataset.csv
 ```
 
-If the CSV is not already present in your clone, download it from Kaggle and place it at that path:
+The raw Kaggle CSV is now tracked in the repository. If a clone is missing it, pull the latest changes or re-download it from:
 
 - Source: <https://www.kaggle.com/datasets/ziya07/ev-energy-consumption-dataset>
 
-Project code automatically validates the dataset columns and shows a readable setup warning if the CSV is missing.
+Project code validates the real dataset headers and shows a readable warning if the CSV is missing or malformed.
 
 ## Setup
 Create and activate a virtual environment:
@@ -49,6 +49,12 @@ Install dependencies:
 
 ```bash
 pip install -r requirements.txt
+```
+
+Enable the shared git hooks so documentation stays synchronized before each commit:
+
+```bash
+git config core.hooksPath .githooks
 ```
 
 ## Run The App
@@ -75,7 +81,14 @@ pytest
 1. Check `.codex/plans/project-checklist.md` before starting work.
 2. Update the checklist when a milestone moves from planned to in progress or completed.
 3. Keep changes within the university-demo scope.
-4. Commit after meaningful completed work using the milestone workflow in `.codex/workflows/milestone-commit-workflow.md`.
+4. Keep `docs/repository-status.md` generated via `python3 scripts/sync_project_docs.py`.
+5. Commit after meaningful completed work using the milestone workflow in `.codex/workflows/milestone-commit-workflow.md`.
+
+## Automation
+- `docs/repository-status.md` is generated automatically by `scripts/sync_project_docs.py`.
+- The shared pre-commit hook in `.githooks/pre-commit` refreshes that generated doc before commits.
+- CI checks that generated docs are not stale.
+- A Codex automation can periodically create milestone commits and push them to GitHub when there is a coherent, verified chunk of work.
 
 ## Demo Narrative
 Use the app in this order during your presentation:
@@ -83,4 +96,3 @@ Use the app in this order during your presentation:
 2. Change the temperature to a hot UAE scenario and raise AC intensity.
 3. Increase driving aggressiveness and traffic to demonstrate a sharper range drop.
 4. Open the dataset insights section to connect the fuzzy logic design back to the data source.
-

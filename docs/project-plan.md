@@ -9,6 +9,7 @@ Build a local Streamlit dashboard that demonstrates how fuzzy logic can produce 
 - One dataset-backed analysis section
 - One team-friendly README
 - One living checklist for progress tracking
+- One generated repository-status doc kept fresh by hook and CI
 
 ## Core Design
 - Baseline remaining range = `manufacturer rated range x battery percentage`
@@ -30,4 +31,3 @@ Build a local Streamlit dashboard that demonstrates how fuzzy logic can produce 
 - Team members can reproduce setup from the README
 - Fuzzy logic clearly penalizes hot, AC-heavy, aggressive, high-traffic scenarios
 - Documentation is detailed enough for group collaboration and presentation prep
-

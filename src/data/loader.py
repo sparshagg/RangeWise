@@ -40,11 +40,10 @@ def load_dataset(path: str | Path = DATASET_PATH) -> pd.DataFrame:
     dataset_path = Path(path)
     if not dataset_path.exists():
         raise FileNotFoundError(
-            f"Dataset not found at {dataset_path}. Place the Kaggle CSV there to enable analysis."
+            f"Dataset not found at {dataset_path}. Add the committed Kaggle CSV there to enable analysis."
         )
 
     df = pd.read_csv(dataset_path)
     normalized = normalize_columns(df)
     validate_dataset(normalized)
     return normalized
-

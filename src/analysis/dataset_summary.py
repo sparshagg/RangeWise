@@ -31,8 +31,8 @@ def build_energy_by_temperature(df: pd.DataFrame) -> pd.DataFrame:
     binned = df.copy()
     binned["temp_bucket"] = pd.cut(
         binned["temperature_c"],
-        bins=[0, 20, 28, 36, 44, 60],
-        labels=["0-20", "21-28", "29-36", "37-44", "45-60"],
+        bins=[-20, 20, 28, 36, 44, 60],
+        labels=["-20-20", "21-28", "29-36", "37-44", "45-60"],
     )
 
     grouped = (
@@ -43,4 +43,3 @@ def build_energy_by_temperature(df: pd.DataFrame) -> pd.DataFrame:
     )
     grouped["energy_consumption_kwh"] = grouped["energy_consumption_kwh"].round(2)
     return grouped
-

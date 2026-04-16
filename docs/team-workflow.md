@@ -4,6 +4,7 @@
 - Keep the project local-first and classroom-scoped.
 - Update the checklist before and after each milestone.
 - Prefer small, complete milestones over large unfinished branches.
+- Keep generated docs synchronized before commits.
 
 ## Suggested Milestones
 1. Repository scaffold and documentation
@@ -18,6 +19,12 @@
 - Move work into `Completed` only after verification.
 - Keep optional ideas in `Possible Later` so scope does not drift.
 
+## Docs Freshness
+- Run `git config core.hooksPath .githooks` once per clone.
+- The pre-commit hook regenerates `docs/repository-status.md`.
+- CI fails if the generated status doc is stale.
+- Manual doc updates should still be made when behavior, setup, or workflow changes.
+
 ## Commit Style
 Use messages such as:
 - `chore: bootstrap project repository`
@@ -30,3 +37,7 @@ Use messages such as:
 - For solo implementation, working directly on the main branch is acceptable.
 - If teammates contribute code later, use short-lived topic branches and merge only complete milestones.
 
+## Automatic GitHub Commits
+- Automatic commits should only happen after a coherent, noticeable milestone.
+- The automation must sync generated docs, run verification when code changes, then commit and push to `origin/main`.
+- Partial, broken, or purely transient changes should be skipped.
