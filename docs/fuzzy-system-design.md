@@ -6,7 +6,7 @@ The range model estimates EV range for real-world UAE driving conditions using a
 ## Modeling Strategy
 - Battery percentage determines the claimed remaining range directly.
 - The dataset computes a shown-range multiplier from `speed`, `driving mode`, and `traffic`.
-- Fuzzy logic then adjusts that shown range using only UAE `temperature` and `AC`.
+- Fuzzy logic then adjusts that shown range using UAE `temperature`, `AC`, `speed`, `driving mode`, and `traffic`.
 - The output is three range values: claimed, shown, and adjusted.
 
 ## Hybrid Design Choice
@@ -15,6 +15,7 @@ The range model estimates EV range for real-world UAE driving conditions using a
 - This keeps the project presentation-friendly while using the data in the actual range calculation rather than only in charts.
 - The dataset is not UAE-native and has no AC column, so heat and AC remain domain-driven rather than learned directly.
 - The dataset has no direct samples above `120 km/h`, so `Fast Highway` and `Extreme Highway` use the nearest highway bucket with an additional explicit high-speed penalty.
+- Speed, mode, and traffic also stay in the fuzzy stage so the final correction can respond to gray-area combinations rather than behaving like a fixed lookup only.
 
 ## Inputs
 ### Battery Percentage
@@ -81,6 +82,7 @@ Thermal factor applied to the shown range:
 - bounded between `0.82` and `1.08`
 - allows modest uplift for `Pleasant + Low AC`
 - applies stronger reductions for `Very Hot` or `Extremely Hot` with higher AC
+- also changes across `speed`, `driving mode`, and `traffic` so the fuzzy factor does not stay flat when those conditions change
 
 ## Rule Themes
 - Dataset stage:
@@ -89,6 +91,7 @@ Thermal factor applied to the shown range:
   - harsher traffic should reduce shown range when the grouped data supports it
 - Fuzzy stage:
   - extremely hot weather and high AC create the strongest thermal penalties
+  - higher speed, sport mode, and high traffic should also reduce the fuzzy factor
   - pleasant weather with low AC can slightly increase range relative to the shown estimate
   - the fuzzy stage adjusts the shown range, not the claimed range directly
 

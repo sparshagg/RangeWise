@@ -68,19 +68,37 @@ def build_explanation(
     else:
         drivers.append("Low AC usage helps preserve battery range.")
 
+    if speed_level == "Extreme Highway":
+        drivers.append("Extreme highway speed applies the strongest fuzzy speed penalty on top of the dataset estimate.")
+    elif speed_level == "Fast Highway":
+        drivers.append("Fast highway speed adds a clear fuzzy speed penalty.")
+    elif speed_level == "Highway":
+        drivers.append("Highway speed adds a mild fuzzy penalty beyond the dataset bucket.")
+    elif speed_level == "City":
+        drivers.append("City-speed travel keeps the fuzzy correction close to neutral.")
+    else:
+        drivers.append("Local-road speed supports a slightly favorable fuzzy correction.")
+
     if driving_mode == "Sport":
-        drivers.append("Sport driving mode increases power demand and lowers the dataset-backed shown range.")
+        drivers.append("Sport driving mode increases power demand and reduces both the shown range and the fuzzy correction.")
     elif driving_mode == "Comfort":
-        drivers.append("Comfort mode balances performance and efficiency in the dataset-backed stage.")
+        drivers.append("Comfort mode keeps the fuzzy correction near neutral while the dataset handles its efficiency impact.")
     elif driving_mode == "Eco":
-        drivers.append("Eco driving mode helps preserve range under the same dataset conditions.")
+        drivers.append("Eco driving mode helps preserve range in both the dataset stage and the fuzzy correction.")
+
+    if traffic_level == "High":
+        drivers.append("High traffic applies a fuzzy stop-and-go penalty on top of the dataset bucket.")
+    elif traffic_level == "Moderate":
+        drivers.append("Moderate traffic keeps the fuzzy traffic effect near neutral.")
+    else:
+        drivers.append("No-traffic conditions allow a slightly favorable fuzzy correction.")
 
     if fuzzy_adjustment_factor >= 1.03:
-        summary = "Favorable UAE weather is slightly increasing the final range above the dataset-backed shown estimate."
+        summary = "Favorable driving and thermal conditions are increasing the final range above the dataset-backed shown estimate."
     elif fuzzy_adjustment_factor >= 0.98:
-        summary = "Dataset conditions dominate this case, while UAE temperature and AC keep the final range near the shown estimate."
+        summary = "The dataset stage dominates this case, while the fuzzy correction keeps the final range near the shown estimate."
     else:
-        summary = "UAE temperature and AC are reducing the final range below the dataset-backed shown estimate."
+        summary = "The fuzzy logic layer is reducing the final range below the dataset-backed shown estimate."
 
     return {
         "summary": summary,

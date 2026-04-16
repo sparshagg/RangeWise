@@ -40,11 +40,22 @@ TEMPERATURE_LEVEL_VALUES = {
     "Very Hot": 43.0,
     "Extremely Hot": 52.0,
 }
+TEMPERATURE_LEVEL_RANGES = {
+    "Pleasant": "20C to 28C",
+    "Hot": "30C to 38C",
+    "Very Hot": "40C to 46C",
+    "Extremely Hot": "48C and above",
+}
 
 AC_LEVEL_VALUES = {
     "Low": 2.0,
     "Medium": 5.0,
     "High": 8.0,
+}
+AC_LEVEL_GUIDE = {
+    "Low": "light cabin cooling",
+    "Medium": "normal UAE cabin cooling",
+    "High": "strong sustained cooling demand",
 }
 
 SPEED_LEVEL_VALUES = {
@@ -54,17 +65,34 @@ SPEED_LEVEL_VALUES = {
     "Fast Highway": 135.0,
     "Extreme Highway": 155.0,
 }
+SPEED_LEVEL_RANGES = {
+    "Local": "40 to 50 km/h",
+    "City": "51 to 80 km/h",
+    "Highway": "81 to 120 km/h",
+    "Fast Highway": "121 to 140 km/h",
+    "Extreme Highway": "141 to 160+ km/h",
+}
 
 DRIVING_MODE_LEVEL_VALUES = {
     "Eco": 1.1,
     "Comfort": 2.0,
     "Sport": 2.9,
 }
+DRIVING_MODE_GUIDE = {
+    "Eco": "efficiency-priority driving",
+    "Comfort": "balanced daily driving",
+    "Sport": "higher-performance driving",
+}
 
 TRAFFIC_LEVEL_VALUES = {
     "No Traffic": 1.1,
     "Moderate": 2.0,
     "High": 2.9,
+}
+TRAFFIC_LEVEL_GUIDE = {
+    "No Traffic": "open-flow traffic",
+    "Moderate": "normal city flow",
+    "High": "heavy stop-and-go traffic",
 }
 
 DATASET_DRIVING_MODE_LABELS = {

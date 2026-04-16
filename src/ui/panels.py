@@ -22,7 +22,10 @@ def render_range_metrics(payload: dict[str, object]) -> None:
     )
 
     st.caption(
-        f"Dataset multiplier: {payload['dataset_multiplier']} | UAE fuzzy factor: {payload['fuzzy_adjustment_factor']}"
+        "Dataset multiplier: "
+        f"{payload['dataset_multiplier']} | "
+        "UAE fuzzy factor (temperature, AC, speed, mode, traffic): "
+        f"{payload['fuzzy_adjustment_factor']}"
     )
 
 

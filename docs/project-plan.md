@@ -21,6 +21,9 @@ Build a local Streamlit dashboard that demonstrates how fuzzy logic can produce 
 - Fuzzy UAE correction responds to:
   - UAE temperature level
   - AC level
+  - speed band
+  - driving mode
+  - traffic level
 - Final adjusted range = `shown range x fuzzy UAE factor`, capped for realism
 
 ## Scope Boundaries

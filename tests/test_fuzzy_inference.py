@@ -84,6 +84,7 @@ def test_dataset_speed_levels_reduce_shown_range_progressively(range_model_datas
     )
 
     assert city["shown_range_km"] > highway["shown_range_km"] > extreme["shown_range_km"]
+    assert city["fuzzy_adjustment_factor"] > highway["fuzzy_adjustment_factor"] > extreme["fuzzy_adjustment_factor"]
 
 
 def test_dataset_driving_mode_reduces_shown_range_progressively(range_model_dataset) -> None:
@@ -119,6 +120,7 @@ def test_dataset_driving_mode_reduces_shown_range_progressively(range_model_data
     )
 
     assert eco["shown_range_km"] > comfort["shown_range_km"] > sport["shown_range_km"]
+    assert eco["fuzzy_adjustment_factor"] > comfort["fuzzy_adjustment_factor"] > sport["fuzzy_adjustment_factor"]
 
 
 def test_fuzzy_ac_levels_adjust_final_range_progressively(range_model_dataset) -> None:
@@ -235,6 +237,7 @@ def test_traffic_levels_reduce_shown_range_progressively(range_model_dataset) ->
     )
 
     assert no_traffic["shown_range_km"] > moderate["shown_range_km"] > high["shown_range_km"]
+    assert no_traffic["fuzzy_adjustment_factor"] > moderate["fuzzy_adjustment_factor"] > high["fuzzy_adjustment_factor"]
 
 
 def test_all_linguistic_ui_combinations_return_fuzzy_output(range_model_dataset) -> None:

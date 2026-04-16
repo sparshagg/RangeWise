@@ -8,10 +8,13 @@ from skfuzzy import control as ctrl
 from src.analysis.dataset_range_model import DatasetRangeEstimate, build_dataset_multiplier
 from src.config import (
     AC_LEVEL_VALUES,
+    DRIVING_MODE_LEVEL_VALUES,
     FINAL_RANGE_CLAIM_CAP,
     FUZZY_FACTOR_MAX,
     FUZZY_FACTOR_MIN,
+    SPEED_LEVEL_VALUES,
     TEMPERATURE_LEVEL_VALUES,
+    TRAFFIC_LEVEL_VALUES,
 )
 from src.fuzzy.explain import build_explanation
 from src.fuzzy.rules import build_rules
@@ -29,10 +32,16 @@ def _compute_adjustment_factor(
     *,
     temperature_level: str,
     ac_level: str,
+    speed_level: str,
+    driving_mode: str,
+    traffic_level: str,
 ) -> float:
     simulation = ctrl.ControlSystemSimulation(build_control_system())
     simulation.input["temperature"] = TEMPERATURE_LEVEL_VALUES[temperature_level]
     simulation.input["ac_intensity"] = AC_LEVEL_VALUES[ac_level]
+    simulation.input["speed_kmh"] = SPEED_LEVEL_VALUES[speed_level]
+    simulation.input["driving_mode"] = DRIVING_MODE_LEVEL_VALUES[driving_mode]
+    simulation.input["traffic_level"] = TRAFFIC_LEVEL_VALUES[traffic_level]
     simulation.compute()
     adjustment_factor = simulation.output.get("fuzzy_adjustment_factor", 1.0)
     return max(min(float(adjustment_factor), FUZZY_FACTOR_MAX), FUZZY_FACTOR_MIN)
@@ -72,6 +81,9 @@ def predict_adjusted_range(
     fuzzy_adjustment_factor = _compute_adjustment_factor(
         temperature_level=temperature_level,
         ac_level=ac_level,
+        speed_level=speed_level,
+        driving_mode=driving_mode,
+        traffic_level=traffic_level,
     )
     adjusted_range_km = max(shown_range_km * fuzzy_adjustment_factor, 0.0)
     adjusted_range_cap = claimed_remaining_km * FINAL_RANGE_CLAIM_CAP

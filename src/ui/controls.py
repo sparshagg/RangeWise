@@ -5,10 +5,15 @@ from dataclasses import dataclass
 import streamlit as st
 
 from src.config import (
+    AC_LEVEL_GUIDE,
     AC_LEVEL_VALUES,
+    DRIVING_MODE_GUIDE,
     DRIVING_MODE_LEVEL_VALUES,
+    SPEED_LEVEL_RANGES,
     SPEED_LEVEL_VALUES,
+    TEMPERATURE_LEVEL_RANGES,
     TEMPERATURE_LEVEL_VALUES,
+    TRAFFIC_LEVEL_GUIDE,
     TRAFFIC_LEVEL_VALUES,
 )
 
@@ -63,6 +68,23 @@ def render_sidebar_controls() -> UserInputs:
     st.sidebar.caption(f"Representative temperature: {TEMPERATURE_LEVEL_VALUES[temperature_level]}C")
     st.sidebar.caption(f"Representative AC load: {AC_LEVEL_VALUES[ac_level]}/10")
     st.sidebar.caption(f"Representative speed: {SPEED_LEVEL_VALUES[speed_level]} km/h")
+
+    with st.sidebar.expander("Input Band Reference"):
+        st.write("Temperature bands")
+        for label, band in TEMPERATURE_LEVEL_RANGES.items():
+            st.write(f"- {label}: {band}")
+        st.write("AC levels")
+        for label, guide in AC_LEVEL_GUIDE.items():
+            st.write(f"- {label}: {guide}")
+        st.write("Speed bands")
+        for label, band in SPEED_LEVEL_RANGES.items():
+            st.write(f"- {label}: {band}")
+        st.write("Driving modes")
+        for label, guide in DRIVING_MODE_GUIDE.items():
+            st.write(f"- {label}: {guide}")
+        st.write("Traffic levels")
+        for label, guide in TRAFFIC_LEVEL_GUIDE.items():
+            st.write(f"- {label}: {guide}")
 
     return UserInputs(
         manufacturer_range_km=manufacturer_range_km,
