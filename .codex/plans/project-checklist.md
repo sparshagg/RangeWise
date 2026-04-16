@@ -11,12 +11,13 @@
 - Docs freshness safeguards added through generated status docs and local hooks
 - Terminal milestone commit workflow added for clean GitHub commits
 - Revised dataset-driven fuzzy calibration completed with linguistic UAE-focused fuzzy sets and coverage checks
+- Revised the calibration milestone again so the dataset now drives `Shown Range` and fuzzy logic adjusts it for UAE heat and AC
 
 ## In Progress
 - No active implementation milestone
 
 ## Next
-- Review the revised linguistic fuzzy app against a few presentation scenarios and tune the final rules if needed
+- Review the three-range app against a few presentation scenarios and tune any remaining dataset buckets or thermal penalties if needed
 - Continue feature work in milestone-sized chunks so terminal commits stay clean
 
 ## Possible Later

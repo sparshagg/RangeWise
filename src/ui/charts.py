@@ -4,18 +4,23 @@ import pandas as pd
 import plotly.graph_objects as go
 
 
-def build_range_comparison_figure(*, baseline_remaining_km: float, adjusted_range_km: float) -> go.Figure:
+def build_range_comparison_figure(
+    *,
+    claimed_remaining_km: float,
+    shown_range_km: float,
+    adjusted_range_km: float,
+) -> go.Figure:
     figure = go.Figure(
         data=[
             go.Bar(
-                x=["Baseline Remaining Range", "Adjusted Range"],
-                y=[baseline_remaining_km, adjusted_range_km],
-                marker_color=["#5f6caf", "#d95d39"],
+                x=["Claimed Remaining", "Shown Range", "Adjusted Range"],
+                y=[claimed_remaining_km, shown_range_km, adjusted_range_km],
+                marker_color=["#5f6caf", "#f0a202", "#d95d39"],
             )
         ]
     )
     figure.update_layout(
-        title="Baseline vs Adjusted EV Range",
+        title="Claimed vs Shown vs Adjusted EV Range",
         yaxis_title="Range (km)",
         template="plotly_white",
     )
@@ -33,15 +38,15 @@ def build_energy_profile_figure(df: pd.DataFrame) -> go.Figure:
 
     figure.add_trace(
         go.Bar(
-            x=df["speed_band"],
-            y=df["energy_consumption_kwh"],
+            x=df["speed_level"],
+            y=df["km_per_kwh"],
             marker_color="#d95d39",
         )
     )
     figure.update_layout(
-        title="Average Energy Consumption by Speed Band",
+        title="Average Dataset Efficiency by Speed Band",
         xaxis_title="Speed Band (km/h)",
-        yaxis_title="Energy Consumption (kWh)",
+        yaxis_title="Efficiency (km/kWh)",
         template="plotly_white",
     )
     return figure

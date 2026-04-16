@@ -9,7 +9,8 @@
 ## Suggested Milestones
 1. Repository scaffold and documentation
 2. Data loading and dataset validation
-3. Fuzzy inference system
+3. Dataset-backed shown-range model
+4. Fuzzy UAE thermal correction
 4. Streamlit dashboard
 5. Tests and local verification
 6. Presentation polish

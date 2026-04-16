@@ -1,11 +1,11 @@
 # Smart EV Range Predictor
 
-Smart EV Range Predictor is a university project that estimates how far an electric vehicle can travel under realistic UAE driving conditions. Instead of relying on a simple battery-percentage calculation, the app combines battery state with a fuzzy logic adjustment layer that reacts to linguistic UAE conditions such as pleasant or extremely hot weather, AC load, speed class, driving mode, and traffic level.
+Smart EV Range Predictor is a university project that estimates how far an electric vehicle can travel under realistic UAE driving conditions. Instead of relying on a simple battery-percentage calculation, the app now uses a three-stage pipeline: a claimed remaining range, a dataset-backed shown range based on speed/mode/traffic, and a final fuzzy UAE adjustment for temperature and AC.
 
 ## Project Scope
 - Local Streamlit app for class demonstration
-- Explainable fuzzy inference system
-- Dataset-backed analysis using the EV Energy Consumption Dataset
+- Explainable fuzzy inference system for UAE heat and AC effects
+- Dataset-backed shown-range model using the EV Energy Consumption Dataset
 - UAE year-round weather calibration with explicit heat and AC impact
 
 ## Tech Stack
@@ -68,8 +68,9 @@ Open the local Streamlit URL printed in the terminal. The dashboard lets you:
 - set battery percentage
 - choose fuzzy UAE temperature levels such as `Pleasant`, `Hot`, `Very Hot`, and `Extremely Hot`
 - choose fuzzy AC, speed, driving mode, and traffic levels using linguistic labels
-- compare nominal range against fuzzy-adjusted range
-- inspect speed-oriented dataset summary insights used to justify the fuzzy logic
+- compare `Claimed Remaining`, `Shown Range`, and `Adjusted Range`
+- inspect the dataset lookup bucket used to build the shown range
+- inspect speed-oriented dataset summary insights used in the actual calculation
 
 ## Run Tests
 
@@ -93,9 +94,9 @@ pytest
 
 ## Demo Narrative
 Use the app in this order during your presentation:
-1. Show the manufacturer range and battery-state baseline.
-2. Switch from `Pleasant` to `Extremely Hot` and raise AC intensity.
-3. Increase speed from `City` to `Highway`, `Fast Highway`, or `Extreme Highway`.
-4. Compare `Eco`, `Comfort`, and `Sport` to show the fuzzy mode penalty.
-5. Increase traffic from `No Traffic` to `High` to show the extra stop-and-go penalty.
-5. Open the dataset insights section to connect the fuzzy logic design back to the speed and energy trends in the data.
+1. Show the manufacturer range and battery-state `Claimed Remaining` value.
+2. Explain that `Shown Range` is computed from the dataset using speed, driving mode, and traffic.
+3. Compare `Eco`, `Comfort`, and `Sport` or move from `City` to `Highway` to show the dataset-backed change in shown range.
+4. Switch from `Pleasant` to `Very Hot` or `Extremely Hot` and raise AC intensity to show the fuzzy UAE correction.
+5. Point to the lookup bucket and fallback details so the audience can see how the dataset was used.
+6. Open the dataset insights section to connect the shown-range calculation back to the speed and efficiency patterns in the CSV.

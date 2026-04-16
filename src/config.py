@@ -4,6 +4,36 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATASET_PATH = PROJECT_ROOT / "data" / "raw" / "EV_Energy_Consumption_Dataset.csv"
 
+SPEED_LEVEL_BINS = [0, 50, 80, 120, 140, float("inf")]
+SPEED_LEVEL_LABELS = [
+    "Local",
+    "City",
+    "Highway",
+    "Fast Highway",
+    "Extreme Highway",
+]
+SPEED_LEVEL_PROXY = {
+    "Local": "Local",
+    "City": "City",
+    "Highway": "Highway",
+    "Fast Highway": "Highway",
+    "Extreme Highway": "Highway",
+}
+SPEED_LEVEL_EXTRAPOLATION = {
+    "Local": 1.0,
+    "City": 1.0,
+    "Highway": 1.0,
+    "Fast Highway": 0.93,
+    "Extreme Highway": 0.87,
+}
+REFERENCE_RANGE_BUCKET = ("City", "Comfort", "Moderate")
+EXACT_GROUP_MIN_COUNT = 20
+SPEED_MODE_MIN_COUNT = 40
+SPEED_MIN_COUNT = 80
+FUZZY_FACTOR_MIN = 0.82
+FUZZY_FACTOR_MAX = 1.08
+FINAL_RANGE_CLAIM_CAP = 1.15
+
 TEMPERATURE_LEVEL_VALUES = {
     "Pleasant": 24.0,
     "Hot": 34.0,

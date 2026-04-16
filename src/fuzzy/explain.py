@@ -9,19 +9,56 @@ def build_explanation(
     speed_level: str,
     driving_mode: str,
     traffic_level: str,
-    adjustment_factor: float,
+    dataset_multiplier: float,
+    fuzzy_adjustment_factor: float,
+    dataset_fallback_level: str,
+    proxy_speed_level: str,
+    sample_count: int,
 ) -> dict[str, str | list[str]]:
     drivers: list[str] = []
 
     if battery_pct <= 25:
-        drivers.append("Low battery state is already limiting the remaining baseline range.")
+        drivers.append("Low battery state is already limiting the claimed remaining range.")
+
+    if dataset_multiplier >= 1.04:
+        dataset_summary_driver = (
+            f"The dataset-backed shown range is above the claimed battery-scaled range because "
+            f"{driving_mode} driving with {traffic_level.lower()} traffic is relatively efficient for the selected speed."
+        )
+    elif dataset_multiplier >= 0.98:
+        dataset_summary_driver = (
+            "The dataset-backed shown range stays close to the claimed battery-scaled range under the selected road conditions."
+        )
+    else:
+        dataset_summary_driver = (
+            f"The dataset-backed shown range is lower than the claimed battery-scaled range because "
+            f"{speed_level.lower()} driving, {driving_mode.lower()} mode, or traffic conditions increase expected energy use."
+        )
+
+    if proxy_speed_level != speed_level:
+        drivers.append(
+            f"The dataset does not contain enough direct samples for {speed_level.lower()} speeds, so the shown-range stage uses the nearest {proxy_speed_level.lower()} dataset bucket with an extra high-speed penalty."
+        )
+    elif dataset_fallback_level != "exact":
+        drivers.append(
+            f"The shown-range estimate uses a {dataset_fallback_level.replace('_', ' ')} fallback bucket with {sample_count} supporting rows."
+        )
+    else:
+        drivers.append(
+            f"The shown-range estimate uses an exact dataset bucket with {sample_count} matching rows."
+        )
+
     if temperature_level == "Extremely Hot":
+        fuzzy_summary_driver = "Extremely hot UAE weather adds the strongest thermal penalty to the shown range."
         drivers.append("Extremely hot UAE weather is creating the harshest thermal penalty.")
     elif temperature_level == "Very Hot":
+        fuzzy_summary_driver = "Very hot weather applies a clear UAE heat penalty on top of the shown range."
         drivers.append("Very hot weather is adding a strong heat penalty.")
     elif temperature_level == "Hot":
+        fuzzy_summary_driver = "Hot weather trims the shown range slightly because the battery and cabin cooling load stay elevated."
         drivers.append("Hot weather is slightly reducing the expected range.")
     else:
+        fuzzy_summary_driver = "Pleasant UAE weather allows a small thermal recovery over the shown range."
         drivers.append("Pleasant weather keeps thermal stress on the vehicle lower.")
 
     if ac_level == "High":
@@ -31,44 +68,23 @@ def build_explanation(
     else:
         drivers.append("Low AC usage helps preserve battery range.")
 
-    if speed_level == "Extreme Highway":
-        drivers.append("Extreme highway speed is one of the strongest range penalties in the model.")
-    elif speed_level == "Fast Highway":
-        drivers.append("Fast highway speed creates a major energy penalty.")
-    elif speed_level == "Highway":
-        drivers.append("Highway speed noticeably increases energy demand.")
-    elif speed_level == "City":
-        drivers.append("City-speed driving creates a moderate speed penalty.")
-    else:
-        drivers.append("Local-road speed helps keep energy demand comparatively low.")
-
     if driving_mode == "Sport":
-        drivers.append("Sport driving mode increases power demand and reduces range.")
+        drivers.append("Sport driving mode increases power demand and lowers the dataset-backed shown range.")
     elif driving_mode == "Comfort":
-        drivers.append("Comfort mode balances performance and efficiency.")
+        drivers.append("Comfort mode balances performance and efficiency in the dataset-backed stage.")
     elif driving_mode == "Eco":
-        drivers.append("Eco driving mode helps preserve range under the same conditions.")
+        drivers.append("Eco driving mode helps preserve range under the same dataset conditions.")
 
-    if traffic_level == "High":
-        drivers.append("High traffic adds stop-and-go inefficiency.")
-    elif traffic_level == "Moderate":
-        drivers.append("Moderate traffic creates some additional drag on efficiency.")
+    if fuzzy_adjustment_factor >= 1.03:
+        summary = "Favorable UAE weather is slightly increasing the final range above the dataset-backed shown estimate."
+    elif fuzzy_adjustment_factor >= 0.98:
+        summary = "Dataset conditions dominate this case, while UAE temperature and AC keep the final range near the shown estimate."
     else:
-        drivers.append("No traffic supports smoother, more efficient travel.")
-
-    if not drivers:
-        drivers.append("Conditions are balanced, so the estimated range remains near the baseline.")
-
-    if adjustment_factor < 0.7:
-        summary = "Harsh UAE driving conditions are causing a strong range reduction."
-    elif adjustment_factor < 0.86:
-        summary = "Current conditions are causing a noticeable range reduction."
-    elif adjustment_factor < 0.95:
-        summary = "Conditions are only slightly below ideal for EV range."
-    else:
-        summary = "Conditions are favorable and the EV stays close to its nominal range."
+        summary = "UAE temperature and AC are reducing the final range below the dataset-backed shown estimate."
 
     return {
         "summary": summary,
+        "dataset_summary_driver": dataset_summary_driver,
+        "fuzzy_summary_driver": fuzzy_summary_driver,
         "drivers": drivers,
     }

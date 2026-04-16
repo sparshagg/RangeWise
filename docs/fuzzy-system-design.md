@@ -1,22 +1,24 @@
 # Fuzzy System Design
 
 ## Objective
-The fuzzy inference system adjusts EV range for real-world UAE driving conditions. It is intentionally compact and explainable so it can be defended in a classroom presentation.
+The range model estimates EV range for real-world UAE driving conditions using a dataset-backed shown-range stage followed by a compact fuzzy UAE thermal correction. It is intentionally explainable so it can be defended in a classroom presentation.
 
 ## Modeling Strategy
-- Battery percentage determines the baseline remaining range directly.
-- Fuzzy logic adjusts that baseline using a linguistic set of UAE demo inputs plus dataset-backed speed justification.
-- The output is a range adjustment factor between strong reduction and near-nominal performance.
+- Battery percentage determines the claimed remaining range directly.
+- The dataset computes a shown-range multiplier from `speed`, `driving mode`, and `traffic`.
+- Fuzzy logic then adjusts that shown range using only UAE `temperature` and `AC`.
+- The output is three range values: claimed, shown, and adjusted.
 
 ## Hybrid Design Choice
 - `Ambient Temperature` and `AC Intensity` stay as explicit UAE demo inputs because they are central to the classroom problem statement.
-- `Speed`, `Driving Mode`, and `Traffic Condition` are aligned with the Kaggle dataset for justification, but the app presents them as linguistic fuzzy sets.
-- This keeps the project presentation-friendly while still grounding the model in the available data.
+- `Speed`, `Driving Mode`, and `Traffic Condition` are aligned with the Kaggle dataset and now drive the shown-range estimate directly.
+- This keeps the project presentation-friendly while using the data in the actual range calculation rather than only in charts.
 - The dataset is not UAE-native and has no AC column, so heat and AC remain domain-driven rather than learned directly.
+- The dataset has no direct samples above `120 km/h`, so `Fast Highway` and `Extreme Highway` use the nearest highway bucket with an additional explicit high-speed penalty.
 
 ## Inputs
 ### Battery Percentage
-- Used deterministically for baseline remaining range
+- Used deterministically for claimed remaining range
 - Not treated as the main uncertainty source
 
 ### Ambient Temperature
@@ -62,28 +64,41 @@ Suggested operating interpretation:
 - `Moderate`: normal city flow
 - `High`: stop-and-go urban traffic
 
-## Output
-### Adjustment Factor
-Range factor applied to the baseline remaining range:
-- `Severe Reduction`
-- `Moderate Reduction`
-- `Mild Reduction`
-- `Near Nominal`
+## Dataset Stage
+- Compute `km_per_kwh = distance_travelled_km / energy_consumption_kwh`
+- Aggregate median efficiency by `speed level`, `driving mode`, and `traffic level`
+- Use `City / Comfort / Moderate` as the reference bucket when available
+- Convert the selected bucket to a shown-range multiplier relative to the reference
+- Use fallback order:
+  - exact `speed + mode + traffic`
+  - `speed + mode`
+  - `speed`
+  - global median
+
+## Fuzzy Output
+### Fuzzy UAE Adjustment Factor
+Thermal factor applied to the shown range:
+- bounded between `0.82` and `1.08`
+- allows modest uplift for `Pleasant + Low AC`
+- applies stronger reductions for `Very Hot` or `Extremely Hot` with higher AC
 
 ## Rule Themes
-- Extremely hot weather and high AC create major range penalties.
-- Fast and extreme highway speeds create the strongest speed penalties.
-- Sport mode must reduce range more than Comfort, and Comfort more than Eco.
-- High traffic must reduce range more than Moderate, and Moderate more than No Traffic.
-- Pleasant weather, low AC, local or city speeds, Eco mode, and No Traffic should preserve range best.
-- Dataset-backed speed behavior should be visible in both the rules and the insight panel.
+- Dataset stage:
+  - higher-speed buckets reduce shown range more than lower-speed buckets
+  - `Sport` must reduce shown range more than `Comfort`, and `Comfort` more than `Eco`
+  - harsher traffic should reduce shown range when the grouped data supports it
+- Fuzzy stage:
+  - extremely hot weather and high AC create the strongest thermal penalties
+  - pleasant weather with low AC can slightly increase range relative to the shown estimate
+  - the fuzzy stage adjusts the shown range, not the claimed range directly
 
 ## Robustness Rules
 - Every selectable UI value must belong to at least one fuzzy set.
-- Every selectable combination must activate at least one rule path to the output.
-- The rule base includes broad fallback coverage so defuzzification never returns a missing output.
+- Every selectable temperature/AC combination must activate at least one rule path to the output.
+- Dataset lookup always resolves through explicit fallback logic so shown range never goes missing.
+- The final range is capped to avoid unrealistic overstatement relative to the claimed battery-scaled value.
 
 ## Why This Fits The Course
 - Uses fuzzy sets and linguistic rules rather than fixed thresholds
-- Handles gray areas between mild and harsh conditions
+- Uses the dataset to quantify normal efficiency conditions and fuzzy logic to handle thermal gray areas
 - Produces interpretable outputs that are easy to explain

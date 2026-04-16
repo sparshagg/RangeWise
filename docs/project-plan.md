@@ -12,14 +12,16 @@ Build a local Streamlit dashboard that demonstrates how fuzzy logic can produce 
 - One generated repository-status doc kept fresh by hook and local terminal checks
 
 ## Core Design
-- Baseline remaining range = `manufacturer rated range x battery percentage`
-- Fuzzy adjustment factor responds to:
-  - UAE temperature level
-  - AC level
+- Claimed remaining range = `manufacturer rated range x battery percentage`
+- Shown range = `claimed remaining range x dataset multiplier`
+- Dataset multiplier comes from grouped dataset efficiency for:
   - UAE speed band
   - driving mode
   - traffic level
-- Final adjusted range = `baseline remaining range x fuzzy adjustment factor`
+- Fuzzy UAE correction responds to:
+  - UAE temperature level
+  - AC level
+- Final adjusted range = `shown range x fuzzy UAE factor`, capped for realism
 
 ## Scope Boundaries
 - No cloud deployment
@@ -30,5 +32,6 @@ Build a local Streamlit dashboard that demonstrates how fuzzy logic can produce 
 ## Success Criteria
 - App launches locally with one command
 - Team members can reproduce setup from the README
-- Fuzzy logic clearly penalizes hot, AC-heavy, aggressive, high-traffic scenarios
+- Dataset stage clearly changes shown range across speed, mode, and traffic
+- Fuzzy logic clearly changes the final range across pleasant versus harsh UAE temperature and AC scenarios
 - Documentation is detailed enough for group collaboration and presentation prep
