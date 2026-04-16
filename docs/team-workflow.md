@@ -37,7 +37,8 @@ Use messages such as:
 - For solo implementation, working directly on the main branch is acceptable.
 - If teammates contribute code later, use short-lived topic branches and merge only complete milestones.
 
-## Automatic GitHub Commits
-- Automatic commits should only happen after a coherent, noticeable milestone.
-- The automation must sync generated docs, run verification when code changes, then commit and push to `origin/main`.
+## Terminal Milestone Commits
+- Commits should happen only after a coherent, noticeable milestone.
+- Run `./scripts/commit_milestone.sh "type: message"` from the terminal after verification.
+- The script syncs generated docs, stages the repo, creates the commit, and pushes to `origin`.
 - Partial, broken, or purely transient changes should be skipped.

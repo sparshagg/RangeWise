@@ -9,6 +9,7 @@
 - Keep `.codex/plans/project-checklist.md` current before and after each milestone.
 - Do not expand scope beyond the agreed classroom demo without explicit approval.
 - Use milestone-sized commits with clear messages after meaningful completed changes.
+- Do not rely on scheduled automations for commits; use terminal-driven milestone commits instead.
 - Keep docs aligned with code; run `python3 scripts/sync_project_docs.py` whenever repo facts change.
 - Treat `docs/repository-status.md` as generated output and do not hand-edit it.
 - Keep the local git hook path pointed at `.githooks` so doc sync runs before commits.

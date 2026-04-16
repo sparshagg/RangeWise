@@ -9,10 +9,10 @@ Commit after a complete and verified milestone such as:
 
 ## Commit Steps
 1. Update `.codex/plans/project-checklist.md`.
-2. Run `python3 scripts/sync_project_docs.py`.
-3. Run the relevant verification commands.
-4. Review the changed files.
-5. Commit with a concise milestone message.
+2. Run the relevant verification commands.
+3. Review the changed files.
+4. Run `./scripts/commit_milestone.sh "type: message"`.
+5. Confirm the commit and push completed cleanly.
 
 ## Commit Message Style
 - `chore: bootstrap project repository`
@@ -21,5 +21,5 @@ Commit after a complete and verified milestone such as:
 - `docs: add team workflow and setup guides`
 - `test: cover range adjustment behavior`
 
-## Automation Rule
-Automatic commits are allowed only for coherent, verified milestones and should push to `origin/main` after a successful commit.
+## Terminal Rule
+Milestone commits should be triggered from the terminal only after the current work is coherent and verified.

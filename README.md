@@ -82,13 +82,14 @@ pytest
 2. Update the checklist when a milestone moves from planned to in progress or completed.
 3. Keep changes within the university-demo scope.
 4. Keep `docs/repository-status.md` generated via `python3 scripts/sync_project_docs.py`.
-5. Commit after meaningful completed work using the milestone workflow in `.codex/workflows/milestone-commit-workflow.md`.
+5. Commit after meaningful completed work using the terminal milestone workflow in `.codex/workflows/milestone-commit-workflow.md`.
 
-## Automation
+## Terminal Commit Workflow
 - `docs/repository-status.md` is generated automatically by `scripts/sync_project_docs.py`.
 - The shared pre-commit hook in `.githooks/pre-commit` refreshes that generated doc before commits.
 - CI checks that generated docs are not stale.
-- A Codex automation can periodically create milestone commits and push them to GitHub when there is a coherent, verified chunk of work.
+- Use `./scripts/commit_milestone.sh "type: message"` after a coherent, verified milestone.
+- The milestone script syncs generated docs, stages changes, creates the commit, and pushes to `origin`.
 
 ## Demo Narrative
 Use the app in this order during your presentation:
