@@ -1,0 +1,33 @@
+import pandas as pd
+
+from src.analysis.dataset_summary import build_dataset_summary, build_energy_by_speed
+
+
+def test_build_dataset_summary_includes_speed_and_labels() -> None:
+    df = pd.DataFrame(
+        {
+            "speed": [25, 60, 95],
+            "temperature_c": [24, 34, 40],
+            "energy_consumption_kwh": [6.1, 8.4, 10.8],
+            "driving_mode": [1, 2, 3],
+            "traffic_level": [1, 2, 3],
+        }
+    )
+
+    summary = build_dataset_summary(df)
+    assert summary["avg_speed_kmh"] == 60.0
+    assert summary["top_driving_mode"] == "Eco"
+    assert summary["top_traffic_condition"] == "Light"
+
+
+def test_build_energy_by_speed_returns_speed_bands() -> None:
+    df = pd.DataFrame(
+        {
+            "speed": [20, 45, 75, 105],
+            "energy_consumption_kwh": [5.5, 7.2, 9.1, 11.8],
+        }
+    )
+
+    result = build_energy_by_speed(df)
+    assert not result.empty
+    assert "speed_band" in result.columns

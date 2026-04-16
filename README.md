@@ -1,6 +1,6 @@
 # Smart EV Range Predictor
 
-Smart EV Range Predictor is a university project that estimates how far an electric vehicle can travel under realistic UAE driving conditions. Instead of relying on a simple battery-percentage calculation, the app combines battery state with a fuzzy logic adjustment layer that reacts to ambient heat, AC intensity, driving style, and traffic load.
+Smart EV Range Predictor is a university project that estimates how far an electric vehicle can travel under realistic UAE driving conditions. Instead of relying on a simple battery-percentage calculation, the app combines battery state with a fuzzy logic adjustment layer that reacts to ambient heat, AC intensity, speed, driving mode, and traffic condition.
 
 ## Project Scope
 - Local Streamlit app for class demonstration
@@ -67,9 +67,9 @@ Open the local Streamlit URL printed in the terminal. The dashboard lets you:
 - enter the manufacturer-rated EV range
 - set battery percentage
 - model UAE temperature conditions
-- adjust AC intensity, driving style, and traffic
+- adjust AC intensity, vehicle speed, driving mode, and traffic condition
 - compare nominal range against fuzzy-adjusted range
-- inspect dataset summary insights
+- inspect speed-oriented dataset summary insights
 
 ## Run Tests
 
@@ -95,5 +95,6 @@ pytest
 Use the app in this order during your presentation:
 1. Show the manufacturer range and battery-state baseline.
 2. Change the temperature to a hot UAE scenario and raise AC intensity.
-3. Increase driving aggressiveness and traffic to demonstrate a sharper range drop.
-4. Open the dataset insights section to connect the fuzzy logic design back to the data source.
+3. Increase speed and switch from `Eco` to `Sport` mode to demonstrate a sharper range drop.
+4. Increase traffic condition to show the extra penalty from stop-and-go travel.
+5. Open the dataset insights section to connect the fuzzy logic design back to the speed and energy trends in the data.

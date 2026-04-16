@@ -5,8 +5,13 @@ The fuzzy inference system adjusts EV range for real-world UAE driving condition
 
 ## Modeling Strategy
 - Battery percentage determines the baseline remaining range directly.
-- Fuzzy logic adjusts that baseline using environmental and behavioral conditions.
+- Fuzzy logic adjusts that baseline using a hybrid set of UAE demo inputs and dataset-backed behavior inputs.
 - The output is a range adjustment factor between strong reduction and near-nominal performance.
+
+## Hybrid Design Choice
+- `Ambient Temperature` and `AC Intensity` stay as explicit UAE demo inputs because they are central to the classroom problem statement.
+- `Speed`, `Driving Mode`, and `Traffic Condition` are aligned with the Kaggle dataset so the model is not purely hand-waved.
+- This keeps the project presentation-friendly while still grounding the model in the available data.
 
 ## Inputs
 ### Battery Percentage
@@ -29,12 +34,23 @@ Suggested operating interpretation:
 - `Medium`: normal AC use
 - `High`: sustained heavy cooling in hot conditions
 
-### Driving Style
-- `Efficient`: smooth acceleration and moderate speed
-- `Balanced`: average mixed driving
-- `Aggressive`: sharp acceleration and inefficient usage
+### Speed
+Dataset-driven speed bands:
+- `Urban`: lower-speed city driving
+- `Mixed`: common everyday mixed-speed travel
+- `Highway`: sustained high-speed travel
 
-### Traffic Level
+Suggested operating interpretation:
+- Urban: around `0 to 50 km/h`
+- Mixed: around `40 to 85 km/h`
+- Highway: above `75 km/h`, with strongest penalty near `95+ km/h`
+
+### Driving Mode
+- `Eco`: conservative energy-saving mode
+- `Normal`: balanced everyday mode
+- `Sport`: higher-performance mode with stronger energy demand
+
+### Traffic Condition
 - `Light`: open roads
 - `Moderate`: normal city flow
 - `Heavy`: stop-and-go urban traffic
@@ -49,12 +65,13 @@ Range factor applied to the baseline remaining range:
 
 ## Rule Themes
 - Hot weather and strong AC together create major range penalties.
-- Aggressive driving and heavy traffic amplify consumption.
-- Mild weather, light AC, efficient driving, and light traffic preserve range.
+- High speed and sport mode create strong range penalties.
+- Heavy traffic and high AC add a secondary penalty layer.
+- Mild or warm weather, low AC, eco mode, and light traffic preserve range better.
 - UAE summer-like conditions should show clearly lower adjusted range than mild conditions.
+- Dataset-backed speed behavior should be visible in both the rules and the insight panel.
 
 ## Why This Fits The Course
 - Uses fuzzy sets and linguistic rules rather than fixed thresholds
 - Handles gray areas between mild and harsh conditions
 - Produces interpretable outputs that are easy to explain
-

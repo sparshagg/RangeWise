@@ -4,6 +4,8 @@ from dataclasses import dataclass
 
 import streamlit as st
 
+from src.config import DRIVING_MODE_LABELS, TRAFFIC_CONDITION_LABELS
+
 
 @dataclass
 class UserInputs:
@@ -11,8 +13,9 @@ class UserInputs:
     battery_pct: float
     temperature_c: float
     ac_intensity: float
-    driving_style: float
-    traffic_level: float
+    speed_kmh: float
+    driving_mode: float
+    traffic_condition: float
 
 
 def render_sidebar_controls() -> UserInputs:
@@ -27,15 +30,26 @@ def render_sidebar_controls() -> UserInputs:
     battery_pct = st.sidebar.slider("Battery Percentage", 0, 100, 80)
     temperature_c = st.sidebar.slider("Ambient Temperature (C)", 10, 55, 35)
     ac_intensity = st.sidebar.slider("AC Intensity", 0, 10, 6)
-    driving_style = st.sidebar.slider("Driving Style", 0, 10, 5)
-    traffic_level = st.sidebar.slider("Traffic Level", 0, 10, 5)
+    speed_kmh = st.sidebar.slider("Vehicle Speed (km/h)", 0, 120, 60)
+    driving_mode = st.sidebar.select_slider(
+        "Driving Mode",
+        options=list(DRIVING_MODE_LABELS.keys()),
+        value=2,
+        format_func=lambda value: DRIVING_MODE_LABELS[value],
+    )
+    traffic_condition = st.sidebar.select_slider(
+        "Traffic Condition",
+        options=list(TRAFFIC_CONDITION_LABELS.keys()),
+        value=2,
+        format_func=lambda value: TRAFFIC_CONDITION_LABELS[value],
+    )
 
     return UserInputs(
         manufacturer_range_km=manufacturer_range_km,
         battery_pct=float(battery_pct),
         temperature_c=float(temperature_c),
         ac_intensity=float(ac_intensity),
-        driving_style=float(driving_style),
-        traffic_level=float(traffic_level),
+        speed_kmh=float(speed_kmh),
+        driving_mode=float(driving_mode),
+        traffic_condition=float(traffic_condition),
     )
-

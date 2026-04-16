@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-from src.analysis.dataset_summary import build_dataset_summary, build_energy_by_temperature
+from src.analysis.dataset_summary import build_dataset_summary, build_energy_by_speed
 from src.config import DATASET_PATH
 from src.data.loader import DatasetValidationError, load_dataset
 from src.fuzzy.inference import predict_adjusted_range
@@ -20,8 +20,9 @@ def build_dashboard_payload(user_inputs: UserInputs) -> dict[str, object]:
         battery_pct=user_inputs.battery_pct,
         temperature_c=user_inputs.temperature_c,
         ac_intensity=user_inputs.ac_intensity,
-        driving_style=user_inputs.driving_style,
-        traffic_level=user_inputs.traffic_level,
+        speed_kmh=user_inputs.speed_kmh,
+        driving_mode=user_inputs.driving_mode,
+        traffic_condition=user_inputs.traffic_condition,
     )
 
 
@@ -36,7 +37,7 @@ def main() -> None:
     st.set_page_config(page_title="Smart EV Range Predictor", layout="wide")
     st.title("Smart EV Range Predictor")
     st.write(
-        "Estimate realistic EV range for UAE driving conditions using a fuzzy logic adjustment layer."
+        "Estimate realistic EV range for UAE driving conditions using heat, AC, speed, driving mode, and traffic-aware fuzzy logic."
     )
 
     user_inputs = render_sidebar_controls()
@@ -64,11 +65,10 @@ def main() -> None:
     summary = build_dataset_summary(dataset)
     render_dataset_summary(summary)
     st.plotly_chart(
-        build_energy_profile_figure(build_energy_by_temperature(dataset)),
+        build_energy_profile_figure(build_energy_by_speed(dataset)),
         use_container_width=True,
     )
 
 
 if __name__ == "__main__":
     main()
-

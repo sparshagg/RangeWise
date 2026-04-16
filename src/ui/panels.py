@@ -30,10 +30,11 @@ def render_dataset_summary(summary: dict[str, object]) -> None:
 
     if "avg_energy_kwh" in summary:
         st.write(f"Average Energy Consumption: {summary['avg_energy_kwh']} kWh")
+    if "avg_speed_kmh" in summary:
+        st.write(f"Average Speed: {summary['avg_speed_kmh']} km/h")
     if "temp_min_c" in summary and "temp_max_c" in summary:
         st.write(f"Temperature Range: {summary['temp_min_c']}C to {summary['temp_max_c']}C")
-    if "top_road_type" in summary:
-        st.write(f"Most Common Road Type: {summary['top_road_type']}")
-    if "top_weather_type" in summary:
-        st.write(f"Most Common Weather Type: {summary['top_weather_type']}")
-
+    if "top_driving_mode" in summary:
+        st.write(f"Most Common Driving Mode: {summary['top_driving_mode']}")
+    if "top_traffic_condition" in summary:
+        st.write(f"Most Common Traffic Condition: {summary['top_traffic_condition']}")

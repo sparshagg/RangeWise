@@ -4,6 +4,18 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATASET_PATH = PROJECT_ROOT / "data" / "raw" / "EV_Energy_Consumption_Dataset.csv"
 
+DRIVING_MODE_LABELS = {
+    1: "Eco",
+    2: "Normal",
+    3: "Sport",
+}
+
+TRAFFIC_CONDITION_LABELS = {
+    1: "Light",
+    2: "Moderate",
+    3: "Heavy",
+}
+
 EXPECTED_COLUMNS = {
     "timestamp": ["timestamp", "Timestamp"],
     "vehicle_id": ["vehicle_id", "Vehicle ID", "Vehicle_ID"],

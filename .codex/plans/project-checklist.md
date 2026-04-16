@@ -10,12 +10,13 @@
 - Tests and local verification workflow scaffolded
 - Docs freshness safeguards added through generated status docs and local hooks
 - Terminal milestone commit workflow added for clean GitHub commits
+- Dataset-driven fuzzy calibration completed with speed, driving mode, and traffic condition inputs
 
 ## In Progress
 - No active implementation milestone
 
 ## Next
-- Review the app against the real dataset and tune the dataset-backed summaries if needed
+- Review the recalibrated app behavior against a few presentation scenarios and tune the final rules if needed
 - Continue feature work in milestone-sized chunks so terminal commits stay clean
 
 ## Possible Later

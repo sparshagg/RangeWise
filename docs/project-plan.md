@@ -16,8 +16,9 @@ Build a local Streamlit dashboard that demonstrates how fuzzy logic can produce 
 - Fuzzy adjustment factor responds to:
   - ambient temperature
   - AC intensity
-  - driving style
-  - traffic level
+  - speed
+  - driving mode
+  - traffic condition
 - Final adjusted range = `baseline remaining range x fuzzy adjustment factor`
 
 ## Scope Boundaries

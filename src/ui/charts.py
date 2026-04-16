@@ -32,18 +32,16 @@ def build_energy_profile_figure(df: pd.DataFrame) -> go.Figure:
         return figure
 
     figure.add_trace(
-        go.Scatter(
-            x=df["temperature_c"],
+        go.Bar(
+            x=df["speed_band"],
             y=df["energy_consumption_kwh"],
-            mode="lines+markers",
-            line={"color": "#d95d39"},
+            marker_color="#d95d39",
         )
     )
     figure.update_layout(
-        title="Average Energy Consumption by Temperature Band",
-        xaxis_title="Temperature Band",
+        title="Average Energy Consumption by Speed Band",
+        xaxis_title="Speed Band (km/h)",
         yaxis_title="Energy Consumption (kWh)",
         template="plotly_white",
     )
     return figure
-

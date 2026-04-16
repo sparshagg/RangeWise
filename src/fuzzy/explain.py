@@ -1,16 +1,24 @@
 from __future__ import annotations
 
 
+from src.config import DRIVING_MODE_LABELS, TRAFFIC_CONDITION_LABELS
+
+
 def build_explanation(
     *,
     battery_pct: float,
     temperature_c: float,
     ac_intensity: float,
-    driving_style: float,
-    traffic_level: float,
+    speed_kmh: float,
+    driving_mode: float,
+    traffic_condition: float,
     adjustment_factor: float,
 ) -> dict[str, str | list[str]]:
     drivers: list[str] = []
+    driving_mode_label = DRIVING_MODE_LABELS.get(int(round(driving_mode)), "Unknown")
+    traffic_condition_label = TRAFFIC_CONDITION_LABELS.get(
+        int(round(traffic_condition)), "Unknown"
+    )
 
     if battery_pct <= 25:
         drivers.append("Low battery state is already limiting the remaining baseline range.")
@@ -24,15 +32,20 @@ def build_explanation(
     elif ac_intensity <= 3:
         drivers.append("Light AC usage helps preserve range.")
 
-    if driving_style >= 7:
-        drivers.append("Aggressive driving behavior increases energy consumption.")
-    elif driving_style <= 3:
-        drivers.append("Efficient driving helps keep the range close to nominal.")
+    if speed_kmh >= 90:
+        drivers.append("Highway-speed demand is one of the strongest range penalties in the dataset.")
+    elif speed_kmh <= 40:
+        drivers.append("Urban or moderate speed helps keep energy demand lower.")
 
-    if traffic_level >= 7:
+    if driving_mode_label == "Sport":
+        drivers.append("Sport driving mode increases power demand and reduces range.")
+    elif driving_mode_label == "Eco":
+        drivers.append("Eco driving mode helps preserve range under the same conditions.")
+
+    if traffic_condition_label == "Heavy":
         drivers.append("Heavy traffic adds stop-and-go inefficiency.")
-    elif traffic_level <= 3:
-        drivers.append("Light traffic helps maintain smoother energy usage.")
+    elif traffic_condition_label == "Light":
+        drivers.append("Light traffic supports smoother, more efficient travel.")
 
     if not drivers:
         drivers.append("Conditions are balanced, so the estimated range remains near the baseline.")
@@ -50,4 +63,3 @@ def build_explanation(
         "summary": summary,
         "drivers": drivers,
     }
-

@@ -20,14 +20,16 @@ def _compute_adjustment_factor(
     *,
     temperature_c: float,
     ac_intensity: float,
-    driving_style: float,
-    traffic_level: float,
+    speed_kmh: float,
+    driving_mode: float,
+    traffic_condition: float,
 ) -> float:
     simulation = ctrl.ControlSystemSimulation(build_control_system())
     simulation.input["temperature"] = temperature_c
     simulation.input["ac_intensity"] = ac_intensity
-    simulation.input["driving_style"] = driving_style
-    simulation.input["traffic_level"] = traffic_level
+    simulation.input["speed_kmh"] = speed_kmh
+    simulation.input["driving_mode"] = driving_mode
+    simulation.input["traffic_condition"] = traffic_condition
     simulation.compute()
     return float(simulation.output["adjustment_factor"])
 
@@ -38,15 +40,17 @@ def predict_adjusted_range(
     battery_pct: float,
     temperature_c: float,
     ac_intensity: float,
-    driving_style: float,
-    traffic_level: float,
+    speed_kmh: float,
+    driving_mode: float,
+    traffic_condition: float,
 ) -> dict[str, float | str | list[str]]:
     baseline_remaining_km = max(manufacturer_range_km, 0) * max(min(battery_pct, 100), 0) / 100
     adjustment_factor = _compute_adjustment_factor(
         temperature_c=temperature_c,
         ac_intensity=ac_intensity,
-        driving_style=driving_style,
-        traffic_level=traffic_level,
+        speed_kmh=speed_kmh,
+        driving_mode=driving_mode,
+        traffic_condition=traffic_condition,
     )
     adjusted_range_km = max(baseline_remaining_km * adjustment_factor, 0.0)
     range_delta_km = adjusted_range_km - baseline_remaining_km
@@ -55,8 +59,9 @@ def predict_adjusted_range(
         battery_pct=battery_pct,
         temperature_c=temperature_c,
         ac_intensity=ac_intensity,
-        driving_style=driving_style,
-        traffic_level=traffic_level,
+        speed_kmh=speed_kmh,
+        driving_mode=driving_mode,
+        traffic_condition=traffic_condition,
         adjustment_factor=adjustment_factor,
     )
 
@@ -68,4 +73,3 @@ def predict_adjusted_range(
         "summary": explanation["summary"],
         "drivers": explanation["drivers"],
     }
-
