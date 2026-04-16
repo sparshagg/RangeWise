@@ -22,7 +22,8 @@
 
 ## Docs Freshness
 - Run `git config core.hooksPath .githooks` once per clone.
-- The pre-commit hook regenerates `docs/repository-status.md`.
+- The pre-commit hook regenerates `data/processed/EV_Range_Model_Processed.csv` and `docs/repository-status.md`.
+- Run `python3 scripts/build_processed_dataset.py` locally when preprocessing logic changes.
 - Run `python3 scripts/sync_project_docs.py` locally when repo facts change.
 - Manual doc updates should still be made when behavior, setup, or workflow changes.
 
@@ -41,5 +42,5 @@ Use messages such as:
 ## Terminal Milestone Commits
 - Commits should happen only after a coherent, noticeable milestone.
 - Run `./scripts/commit_milestone.sh "type: message"` from the terminal after verification.
-- The script syncs generated docs, stages the repo, creates the commit, and pushes to `origin`.
+- The script regenerates the processed dataset, syncs generated docs, stages the repo, creates the commit, and pushes to `origin`.
 - Partial, broken, or purely transient changes should be skipped.

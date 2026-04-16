@@ -61,6 +61,35 @@ def add_range_model_labels(df: pd.DataFrame) -> pd.DataFrame:
     return enriched
 
 
+def build_processed_dataset(df: pd.DataFrame) -> pd.DataFrame:
+    enriched = add_uae_condition_labels(add_range_model_labels(df))
+
+    preferred_columns = [
+        "vehicle_id",
+        "timestamp",
+        "speed",
+        "speed_level",
+        "acceleration",
+        "driving_mode",
+        "driving_mode_label",
+        "traffic_level",
+        "traffic_level_label",
+        "temperature_c",
+        "uae_heat_band",
+        "battery_state_pct",
+        "distance_travelled_km",
+        "energy_consumption_kwh",
+        "km_per_kwh",
+    ]
+    selected_columns = [column for column in preferred_columns if column in enriched.columns]
+    processed = enriched[selected_columns].copy()
+
+    if "km_per_kwh" in processed.columns:
+        processed["km_per_kwh"] = processed["km_per_kwh"].round(3)
+
+    return processed
+
+
 def dataset_overview(df: pd.DataFrame) -> dict[str, object]:
     overview: dict[str, object] = {
         "rows": int(len(df)),

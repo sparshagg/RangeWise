@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pandas as pd
 import streamlit as st
 
 
@@ -88,3 +89,28 @@ def render_dataset_lookup_table(lookup_table: object) -> None:
         st.info("Lookup table is unavailable until the dataset is loaded.")
         return
     st.dataframe(lookup_table, hide_index=True, use_container_width=True)
+
+
+def render_processed_dataset_preview(processed_df: pd.DataFrame) -> None:
+    st.subheader("Processed Dataset Preview")
+    if processed_df.empty:
+        st.info("Processed dataset preview is unavailable.")
+        return
+
+    st.write(
+        f"Processed rows: {len(processed_df)} | Processed columns: {len(processed_df.columns)}"
+    )
+    st.write(
+        "Derived fields shown here include `speed_level`, `driving_mode_label`, "
+        "`traffic_level_label`, `uae_heat_band`, and `km_per_kwh`."
+    )
+    st.dataframe(processed_df.head(12), hide_index=True, use_container_width=True)
+
+
+def render_processing_flow() -> None:
+    st.subheader("How We Processed The Dataset")
+    st.write("1. Load the raw Kaggle CSV and normalize its column names.")
+    st.write("2. Compute `km_per_kwh = distance_travelled_km / energy_consumption_kwh`.")
+    st.write("3. Map raw values into presentation-friendly bands such as `speed_level` and `uae_heat_band`.")
+    st.write("4. Convert dataset codes into labels like `Eco`, `Comfort`, `Sport`, `No Traffic`, `Moderate`, and `High`.")
+    st.write("5. Group the processed rows by `speed_level`, `driving_mode_label`, and `traffic_level_label` to build the lookup table used for `Shown Range`.")

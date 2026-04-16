@@ -4,7 +4,13 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.config import DATASET_PATH, EXPECTED_COLUMNS, REQUIRED_CANONICAL_COLUMNS
+from src.config import (
+    DATASET_PATH,
+    EXPECTED_COLUMNS,
+    PROCESSED_DATASET_PATH,
+    REQUIRED_CANONICAL_COLUMNS,
+)
+from src.data.preprocessing import build_processed_dataset
 
 
 class DatasetValidationError(ValueError):
@@ -47,3 +53,17 @@ def load_dataset(path: str | Path = DATASET_PATH) -> pd.DataFrame:
     normalized = normalize_columns(df)
     validate_dataset(normalized)
     return normalized
+
+
+def build_processed_dataset_frame(path: str | Path = DATASET_PATH) -> pd.DataFrame:
+    raw_dataset = load_dataset(path)
+    return build_processed_dataset(raw_dataset)
+
+
+def load_processed_dataset(path: str | Path = PROCESSED_DATASET_PATH) -> pd.DataFrame:
+    dataset_path = Path(path)
+    if not dataset_path.exists():
+        raise FileNotFoundError(
+            f"Processed dataset not found at {dataset_path}. Generate it with scripts/build_processed_dataset.py."
+        )
+    return pd.read_csv(dataset_path)

@@ -7,7 +7,8 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 STATUS_PATH = PROJECT_ROOT / "docs" / "repository-status.md"
-DATA_DIR = PROJECT_ROOT / "data" / "raw"
+RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
+PROCESSED_DATA_DIR = PROJECT_ROOT / "data" / "processed"
 
 
 def run_git(*args: str) -> str:
@@ -25,7 +26,7 @@ def run_git(*args: str) -> str:
 
 
 def discover_dataset() -> tuple[str, int, int, list[str]]:
-    csv_files = sorted(DATA_DIR.glob("*.csv"))
+    csv_files = sorted(RAW_DATA_DIR.glob("*.csv"))
     if not csv_files:
         return ("No dataset committed", 0, 0, [])
 
@@ -47,11 +48,36 @@ def discover_dataset() -> tuple[str, int, int, list[str]]:
     )
 
 
+def discover_processed_dataset() -> tuple[str, int, int, list[str]]:
+    csv_files = sorted(PROCESSED_DATA_DIR.glob("*.csv"))
+    if not csv_files:
+        return ("No processed dataset committed", 0, 0, [])
+
+    dataset_path = csv_files[0]
+    with dataset_path.open("r", newline="", encoding="utf-8") as handle:
+        reader = csv.reader(handle)
+        try:
+            header = next(reader)
+        except StopIteration:
+            return (str(dataset_path.relative_to(PROJECT_ROOT)), 0, 0, [])
+
+        row_count = sum(1 for _ in reader)
+
+    return (
+        str(dataset_path.relative_to(PROJECT_ROOT)),
+        row_count,
+        len(header),
+        header,
+    )
+
+
 def build_status_markdown() -> str:
     dataset_path, row_count, column_count, header = discover_dataset()
+    processed_path, processed_row_count, processed_column_count, processed_header = discover_processed_dataset()
     remote = run_git("remote", "get-url", "origin")
     branch = run_git("branch", "--show-current")
     header_preview = ", ".join(header[:8]) if header else "Unavailable"
+    processed_header_preview = ", ".join(processed_header[:8]) if processed_header else "Unavailable"
 
     return "\n".join(
         [
@@ -64,14 +90,19 @@ def build_status_markdown() -> str:
             f"- Active branch: `{branch}`",
             "",
             "## Dataset",
-            f"- Committed CSV: `{dataset_path}`",
-            f"- Row count: `{row_count}`",
-            f"- Column count: `{column_count}`",
-            f"- Header preview: `{header_preview}`",
+            f"- Raw CSV: `{dataset_path}`",
+            f"- Raw row count: `{row_count}`",
+            f"- Raw column count: `{column_count}`",
+            f"- Raw header preview: `{header_preview}`",
+            f"- Processed CSV: `{processed_path}`",
+            f"- Processed row count: `{processed_row_count}`",
+            f"- Processed column count: `{processed_column_count}`",
+            f"- Processed header preview: `{processed_header_preview}`",
             "",
             "## Docs Freshness",
             "- Generated docs are refreshed by `.githooks/pre-commit` before commits.",
             "- Run `python3 scripts/sync_project_docs.py` locally whenever repository facts change.",
+            "- Run `python3 scripts/build_processed_dataset.py` locally when the preprocessing logic changes.",
             "- Manual Markdown pages must still be updated when project behavior or workflow changes.",
             "",
         ]

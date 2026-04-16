@@ -3,6 +3,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATASET_PATH = PROJECT_ROOT / "data" / "raw" / "EV_Energy_Consumption_Dataset.csv"
+PROCESSED_DATASET_PATH = PROJECT_ROOT / "data" / "processed" / "EV_Range_Model_Processed.csv"
 
 SPEED_LEVEL_BINS = [0, 50, 80, 120, 140, float("inf")]
 SPEED_LEVEL_LABELS = [

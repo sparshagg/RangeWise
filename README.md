@@ -31,11 +31,17 @@ Committed dataset path:
 data/raw/EV_Energy_Consumption_Dataset.csv
 ```
 
+Generated processed dataset path:
+
+```text
+data/processed/EV_Range_Model_Processed.csv
+```
+
 The raw Kaggle CSV is now tracked in the repository. If a clone is missing it, pull the latest changes or re-download it from:
 
 - Source: <https://www.kaggle.com/datasets/ziya07/ev-energy-consumption-dataset>
 
-Project code validates the real dataset headers and shows a readable warning if the CSV is missing or malformed.
+Project code validates the real dataset headers and shows a readable warning if the CSV is missing or malformed. The processed CSV is generated from the raw file using the same transformation logic the app uses for previews and analysis.
 
 ## Setup
 Create and activate a virtual environment:
@@ -70,6 +76,7 @@ Open the local Streamlit URL printed in the terminal. The dashboard lets you:
 - choose fuzzy AC, speed, driving mode, and traffic levels using linguistic labels
 - open the sidebar `Input Band Reference` to see the exact ranges and interpretations for each linguistic label
 - compare `Claimed Remaining`, `Shown Range`, and `Adjusted Range`
+- inspect a processed dataset preview that shows derived columns such as `speed_level`, `driving_mode_label`, `traffic_level_label`, and `km_per_kwh`
 - inspect the dataset lookup bucket used to build the shown range
 - inspect speed-oriented dataset summary insights used in the actual calculation
 
@@ -88,10 +95,11 @@ pytest
 
 ## Terminal Commit Workflow
 - `docs/repository-status.md` is generated automatically by `scripts/sync_project_docs.py`.
-- The shared pre-commit hook in `.githooks/pre-commit` refreshes that generated doc before commits.
+- `data/processed/EV_Range_Model_Processed.csv` is generated automatically by `scripts/build_processed_dataset.py`.
+- The shared pre-commit hook in `.githooks/pre-commit` refreshes both generated artifacts before commits.
 - Run local verification before milestone commits.
 - Use `./scripts/commit_milestone.sh "type: message"` after a coherent, verified milestone.
-- The milestone script syncs generated docs, stages changes, creates the commit, and pushes to `origin`.
+- The milestone script regenerates the processed dataset, syncs generated docs, stages changes, creates the commit, and pushes to `origin`.
 
 ## Demo Narrative
 Use the app in this order during your presentation:
@@ -100,4 +108,5 @@ Use the app in this order during your presentation:
 3. Compare `Eco`, `Comfort`, and `Sport` or move from `City` to `Highway` to show the dataset-backed change in shown range.
 4. Switch from `Pleasant` to `Very Hot` or `Extremely Hot` and raise AC intensity to show the fuzzy UAE correction.
 5. Point to the lookup bucket and fallback details so the audience can see how the dataset was used.
-6. Open the dataset insights section to connect the shown-range calculation back to the speed and efficiency patterns in the CSV.
+6. Open the processed dataset preview to show exactly which columns were derived from the raw Kaggle file.
+7. Open the dataset insights section to connect the shown-range calculation back to the speed and efficiency patterns in the CSV.

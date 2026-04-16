@@ -10,8 +10,15 @@
 data/raw/EV_Energy_Consumption_Dataset.csv
 ```
 
+## Generated Processed File Path
+
+```text
+data/processed/EV_Range_Model_Processed.csv
+```
+
 ## Current Repository State
 - The raw Kaggle CSV is committed to the repository.
+- The processed dataset CSV is generated and committed in `data/processed/`.
 - The loader is aligned with the real file name and the real column names in the dataset.
 - Future preprocessing outputs should live outside `data/raw/`.
 
@@ -20,6 +27,7 @@ The dataset supports:
 - exploratory analysis
 - summary statistics for the dashboard
 - sanity checks for the fuzzy-input ranges
+- a processed preview table that shows exactly how the raw CSV was transformed
 - documentation of why certain rules matter in the UAE context
 
 ## Expected Signal Areas
@@ -32,4 +40,5 @@ The dataset supports:
 ## Notes
 - The current app does not require model training.
 - If the CSV is missing, the app still runs and explains how to add it.
-- Keep the original raw file unchanged and place any future cleaned derivatives in a separate folder if needed.
+- Keep the original raw file unchanged and place cleaned derivatives in `data/processed/`.
+- Regenerate the processed CSV with `python3 scripts/build_processed_dataset.py` when preprocessing logic changes.

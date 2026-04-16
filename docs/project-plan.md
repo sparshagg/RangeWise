@@ -7,6 +7,7 @@ Build a local Streamlit dashboard that demonstrates how fuzzy logic can produce 
 - One working local app
 - One explainable fuzzy model tuned for UAE conditions
 - One dataset-backed analysis section
+- One visible processed-dataset artifact and preview section
 - One team-friendly README
 - One living checklist for progress tracking
 - One generated repository-status doc kept fresh by hook and local terminal checks

@@ -3,7 +3,13 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from src.data.loader import DatasetValidationError, load_dataset, normalize_columns
+from src.data.loader import (
+    DatasetValidationError,
+    build_processed_dataset_frame,
+    load_dataset,
+    load_processed_dataset,
+    normalize_columns,
+)
 
 
 def test_normalize_columns_maps_expected_aliases() -> None:
@@ -88,3 +94,41 @@ def test_load_dataset_accepts_real_dataset_header_shape(tmp_path: Path) -> None:
     assert "speed" in loaded.columns
     assert "traffic_level" in loaded.columns
     assert "distance_travelled_km" in loaded.columns
+
+
+def test_build_processed_dataset_frame_adds_derived_columns(tmp_path: Path) -> None:
+    dataset_path = tmp_path / "ev_processed.csv"
+    pd.DataFrame(
+        {
+            "Vehicle_ID": [1102],
+            "Timestamp": ["2024-01-01 00:00:00"],
+            "Speed_kmh": [111.5],
+            "Acceleration_ms2": [-2.7],
+            "Battery_State_%": [30.4],
+            "Driving_Mode": [2],
+            "Traffic_Condition": [1],
+            "Temperature_C": [34.0],
+            "Distance_Travelled_km": [20.7],
+            "Energy_Consumption_kWh": [12.0],
+        }
+    ).to_csv(dataset_path, index=False)
+
+    processed = build_processed_dataset_frame(dataset_path)
+    assert "speed_level" in processed.columns
+    assert "driving_mode_label" in processed.columns
+    assert "traffic_level_label" in processed.columns
+    assert "km_per_kwh" in processed.columns
+
+
+def test_load_processed_dataset_reads_generated_csv(tmp_path: Path) -> None:
+    dataset_path = tmp_path / "processed.csv"
+    pd.DataFrame(
+        {
+            "speed": [60],
+            "speed_level": ["City"],
+            "km_per_kwh": [3.2],
+        }
+    ).to_csv(dataset_path, index=False)
+
+    loaded = load_processed_dataset(dataset_path)
+    assert list(loaded.columns) == ["speed", "speed_level", "km_per_kwh"]

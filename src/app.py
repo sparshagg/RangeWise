@@ -12,13 +12,20 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.analysis.dataset_range_model import build_efficiency_lookup_table
 from src.analysis.dataset_summary import build_dataset_summary, build_energy_by_speed
-from src.config import DATASET_PATH
-from src.data.loader import DatasetValidationError, load_dataset
+from src.config import DATASET_PATH, PROCESSED_DATASET_PATH
+from src.data.loader import (
+    DatasetValidationError,
+    build_processed_dataset_frame,
+    load_dataset,
+    load_processed_dataset,
+)
 from src.fuzzy.inference import predict_adjusted_range
 from src.ui.charts import build_energy_profile_figure, build_range_comparison_figure
 from src.ui.controls import UserInputs, render_sidebar_controls
 from src.ui.panels import (
     render_dataset_lookup_table,
+    render_processed_dataset_preview,
+    render_processing_flow,
     render_dataset_summary,
     render_explanation_panel,
     render_range_metrics,
@@ -46,6 +53,18 @@ def load_dashboard_dataset(dataset_path: str | Path = DATASET_PATH) -> tuple[pd.
         return load_dataset(dataset_path), None
     except (FileNotFoundError, DatasetValidationError) as exc:
         return None, str(exc)
+
+
+def load_dashboard_processed_dataset(
+    dataset_path: str | Path = PROCESSED_DATASET_PATH,
+) -> tuple[pd.DataFrame | None, str | None]:
+    try:
+        return load_processed_dataset(dataset_path), None
+    except FileNotFoundError:
+        try:
+            return build_processed_dataset_frame(), None
+        except (FileNotFoundError, DatasetValidationError) as exc:
+            return None, str(exc)
 
 
 def main() -> None:
@@ -76,11 +95,20 @@ def main() -> None:
         st.warning(error_message)
         render_dataset_summary({})
         render_dataset_lookup_table(pd.DataFrame())
+        render_processed_dataset_preview(pd.DataFrame())
         return
 
     assert dataset is not None
+    processed_dataset, processed_error_message = load_dashboard_processed_dataset()
     summary = build_dataset_summary(dataset)
     render_dataset_summary(summary)
+    render_processing_flow()
+    if processed_error_message:
+        st.warning(processed_error_message)
+        render_processed_dataset_preview(pd.DataFrame())
+    else:
+        assert processed_dataset is not None
+        render_processed_dataset_preview(processed_dataset)
     render_dataset_lookup_table(build_efficiency_lookup_table(dataset))
     st.plotly_chart(
         build_energy_profile_figure(build_energy_by_speed(dataset)),

@@ -14,6 +14,7 @@ else
   PYTHON_BIN="python3"
 fi
 
+"$PYTHON_BIN" scripts/build_processed_dataset.py
 "$PYTHON_BIN" scripts/sync_project_docs.py
 
 if [ -x ".venv/bin/pytest" ]; then
