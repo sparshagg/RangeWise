@@ -7,8 +7,8 @@
 - Raw Kaggle dataset committed to the repository
 - Fuzzy inference engine implemented for UAE year-round conditions
 - Streamlit dashboard wired to fuzzy range prediction and dataset summaries
-- Tests and CI scaffolded
-- Docs freshness safeguards added through generated status docs, hooks, and CI checks
+- Tests and local verification workflow scaffolded
+- Docs freshness safeguards added through generated status docs and local hooks
 - Terminal milestone commit workflow added for clean GitHub commits
 
 ## In Progress

@@ -71,7 +71,7 @@ def build_status_markdown() -> str:
             "",
             "## Docs Freshness",
             "- Generated docs are refreshed by `.githooks/pre-commit` before commits.",
-            "- CI reruns the generator and fails if `docs/repository-status.md` is stale.",
+            "- Run `python3 scripts/sync_project_docs.py` locally whenever repository facts change.",
             "- Manual Markdown pages must still be updated when project behavior or workflow changes.",
             "",
         ]

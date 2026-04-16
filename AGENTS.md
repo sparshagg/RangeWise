@@ -13,6 +13,7 @@
 - Keep docs aligned with code; run `python3 scripts/sync_project_docs.py` whenever repo facts change.
 - Treat `docs/repository-status.md` as generated output and do not hand-edit it.
 - Keep the local git hook path pointed at `.githooks` so doc sync runs before commits.
+- Keep verification local; do not depend on GitHub Actions for routine project checks.
 
 ## Project Constraints
 - Local-first Streamlit app only.

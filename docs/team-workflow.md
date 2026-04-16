@@ -11,7 +11,7 @@
 2. Data loading and dataset validation
 3. Fuzzy inference system
 4. Streamlit dashboard
-5. Tests and CI
+5. Tests and local verification
 6. Presentation polish
 
 ## Checklist Discipline
@@ -22,7 +22,7 @@
 ## Docs Freshness
 - Run `git config core.hooksPath .githooks` once per clone.
 - The pre-commit hook regenerates `docs/repository-status.md`.
-- CI fails if the generated status doc is stale.
+- Run `python3 scripts/sync_project_docs.py` locally when repo facts change.
 - Manual doc updates should still be made when behavior, setup, or workflow changes.
 
 ## Commit Style

@@ -9,7 +9,7 @@ Build a local Streamlit dashboard that demonstrates how fuzzy logic can produce 
 - One dataset-backed analysis section
 - One team-friendly README
 - One living checklist for progress tracking
-- One generated repository-status doc kept fresh by hook and CI
+- One generated repository-status doc kept fresh by hook and local terminal checks
 
 ## Core Design
 - Baseline remaining range = `manufacturer rated range x battery percentage`

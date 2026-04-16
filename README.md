@@ -87,7 +87,7 @@ pytest
 ## Terminal Commit Workflow
 - `docs/repository-status.md` is generated automatically by `scripts/sync_project_docs.py`.
 - The shared pre-commit hook in `.githooks/pre-commit` refreshes that generated doc before commits.
-- CI checks that generated docs are not stale.
+- Run local verification before milestone commits.
 - Use `./scripts/commit_milestone.sh "type: message"` after a coherent, verified milestone.
 - The milestone script syncs generated docs, stages changes, creates the commit, and pushes to `origin`.
 
