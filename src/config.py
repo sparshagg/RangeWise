@@ -159,3 +159,44 @@ REQUIRED_CANONICAL_COLUMNS = [
     "battery_state_pct",
     "energy_consumption_kwh",
 ]
+
+# ---------------------------------------------------------------------------
+# ANFIS / Neuro-Fuzzy Configuration
+# ---------------------------------------------------------------------------
+
+ANFIS_WEIGHTS_PATH = PROJECT_ROOT / "models" / "anfis_weights.json"
+
+ANFIS_N_INPUTS = 5
+ANFIS_N_MFS = 2          # Gaussian MFs per input → 2^5 = 32 rules
+ANFIS_N_EPOCHS = 20
+ANFIS_TRAIN_SPLIT = 0.8
+ANFIS_RANDOM_SEED = 42
+
+# Input universe bounds for normalization — same order as ANFIS inputs:
+# [temperature_c, ac_intensity, speed_kmh, driving_mode, traffic_level]
+ANFIS_INPUT_BOUNDS: list[tuple[float, float]] = [
+    (15.0, 56.0),
+    (0.0,  10.0),
+    (40.0, 160.0),
+    (1.0,  3.0),
+    (1.0,  3.0),
+]
+
+# Warm-start Gaussian MF centers derived from existing fuzzy MF centroids
+ANFIS_INIT_CENTERS: list[list[float]] = [
+    [22.0, 48.0],    # temperature_c
+    [2.5,  7.5],     # ac_intensity
+    [65.0, 130.0],   # speed_kmh
+    [1.4,  2.7],     # driving_mode
+    [1.4,  2.7],     # traffic_level
+]
+
+# UAE severity score thresholds
+SEVERITY_TEMP_THRESHOLD = 35.0   # °C — below this, temperature contributes 0
+SEVERITY_TEMP_MAX = 52.0
+SEVERITY_SPEED_THRESHOLD = 110.0  # km/h
+SEVERITY_SPEED_MAX = 160.0
+
+# Severity → ANFIS weight interpolation
+SEVERITY_W_ANFIS_MIN = 0.25   # weight at severity = 0 (mild)
+SEVERITY_W_ANFIS_MAX = 0.70   # weight at severity = 1 (extreme UAE)
