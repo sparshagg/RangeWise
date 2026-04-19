@@ -9,18 +9,28 @@ def build_range_comparison_figure(
     claimed_remaining_km: float,
     shown_range_km: float,
     adjusted_range_km: float,
+    hybrid_range_km: float | None = None,
 ) -> go.Figure:
+    labels = ["Claimed Remaining", "Shown Range", "Fuzzy-Only Range"]
+    values = [claimed_remaining_km, shown_range_km, adjusted_range_km]
+    colors = ["#5f6caf", "#f0a202", "#d95d39"]
+
+    if hybrid_range_km is not None:
+        labels.append("Hybrid Range")
+        values.append(hybrid_range_km)
+        colors.append("#2ec4b6")
+
+    title = (
+        "Claimed vs Shown vs Fuzzy vs Hybrid EV Range"
+        if hybrid_range_km is not None
+        else "Claimed vs Shown vs Fuzzy-Only EV Range"
+    )
+
     figure = go.Figure(
-        data=[
-            go.Bar(
-                x=["Claimed Remaining", "Shown Range", "Adjusted Range"],
-                y=[claimed_remaining_km, shown_range_km, adjusted_range_km],
-                marker_color=["#5f6caf", "#f0a202", "#d95d39"],
-            )
-        ]
+        data=[go.Bar(x=labels, y=values, marker_color=colors)]
     )
     figure.update_layout(
-        title="Claimed vs Shown vs Adjusted EV Range",
+        title=title,
         yaxis_title="Range (km)",
         template="plotly_white",
     )

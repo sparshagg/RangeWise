@@ -12,7 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.analysis.dataset_range_model import build_efficiency_lookup_table
 from src.analysis.dataset_summary import build_dataset_summary, build_energy_by_speed
-from src.config import DATASET_PATH, PROCESSED_DATASET_PATH
+from src.config import ANFIS_WEIGHTS_PATH, DATASET_PATH, PROCESSED_DATASET_PATH
 from src.data.loader import (
     DatasetValidationError,
     build_processed_dataset_frame,
@@ -32,9 +32,22 @@ from src.ui.panels import (
 )
 
 
+@st.cache_resource
+def load_anfis_model():
+    """Load trained ANFIS weights once per session. Returns None if not trained yet."""
+    if not ANFIS_WEIGHTS_PATH.exists():
+        return None
+    try:
+        from src.neuro_fuzzy.anfis import ANFIS
+        return ANFIS.load(ANFIS_WEIGHTS_PATH)
+    except Exception:
+        return None
+
+
 def build_dashboard_payload(
     user_inputs: UserInputs,
     dataset: pd.DataFrame | None = None,
+    anfis=None,
 ) -> dict[str, object]:
     return predict_adjusted_range(
         manufacturer_range_km=user_inputs.manufacturer_range_km,
@@ -45,6 +58,7 @@ def build_dashboard_payload(
         driving_mode=user_inputs.driving_mode,
         traffic_level=user_inputs.traffic_level,
         dataset=dataset,
+        anfis=anfis,
     )
 
 
@@ -76,14 +90,17 @@ def main() -> None:
 
     user_inputs = render_sidebar_controls()
     dataset, error_message = load_dashboard_dataset()
-    payload = build_dashboard_payload(user_inputs, dataset)
+    anfis_model = load_anfis_model()
+    payload = build_dashboard_payload(user_inputs, dataset, anfis_model)
 
     render_range_metrics(payload)
+    hybrid_km = payload.get("hybrid_range_km")
     st.plotly_chart(
         build_range_comparison_figure(
             claimed_remaining_km=float(payload["claimed_remaining_km"]),
             shown_range_km=float(payload["shown_range_km"]),
             adjusted_range_km=float(payload["adjusted_range_km"]),
+            hybrid_range_km=float(hybrid_km) if hybrid_km is not None else None,
         ),
         use_container_width=True,
     )

@@ -9,7 +9,13 @@ def _format_delta(value: float, label: str) -> str:
 
 
 def render_range_metrics(payload: dict[str, object]) -> None:
-    col1, col2, col3 = st.columns(3)
+    hybrid_km = payload.get("hybrid_range_km")
+
+    if hybrid_km is not None:
+        col1, col2, col3, col4 = st.columns(4)
+    else:
+        col1, col2, col3 = st.columns(3)
+
     col1.metric("Claimed Remaining", f"{payload['claimed_remaining_km']} km")
     col2.metric(
         "Shown Range",
@@ -17,17 +23,31 @@ def render_range_metrics(payload: dict[str, object]) -> None:
         _format_delta(float(payload["shown_range_km"]) - float(payload["claimed_remaining_km"]), "vs claimed"),
     )
     col3.metric(
-        "Adjusted Range",
+        "Fuzzy-Only Range",
         f"{payload['adjusted_range_km']} km",
         _format_delta(float(payload["range_delta_vs_shown_km"]), "vs shown"),
     )
 
-    st.caption(
-        "Dataset multiplier: "
-        f"{payload['dataset_multiplier']} | "
-        "UAE fuzzy factor (temperature, AC, speed, mode, traffic): "
-        f"{payload['fuzzy_adjustment_factor']}"
-    )
+    if hybrid_km is not None:
+        col4.metric(
+            "Hybrid Range",
+            f"{hybrid_km} km",
+            _format_delta(float(hybrid_km) - float(payload["adjusted_range_km"]), "vs fuzzy"),
+        )
+        st.caption(
+            f"Dataset mult: {payload['dataset_multiplier']} | "
+            f"Fuzzy factor: {payload['fuzzy_adjustment_factor']} | "
+            f"ANFIS factor: {payload.get('anfis_factor', '—')} | "
+            f"Hybrid factor: {payload.get('hybrid_factor', '—')} | "
+            f"UAE severity: {payload.get('severity_score', '—')} | "
+            f"ANFIS weight: {payload.get('w_anfis', '—')}"
+        )
+    else:
+        st.caption(
+            f"Dataset multiplier: {payload['dataset_multiplier']} | "
+            f"UAE fuzzy factor: {payload['fuzzy_adjustment_factor']} | "
+            "Hybrid Range: N/A — run scripts/train_anfis.py first"
+        )
 
 
 def render_explanation_panel(payload: dict[str, object]) -> None:
