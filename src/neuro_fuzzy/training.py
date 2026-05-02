@@ -78,10 +78,13 @@ def compute_training_target(df: pd.DataFrame) -> np.ndarray:
     Compute per-row adjustment factors relative to the reference bucket.
 
     Reference bucket = City / Comfort (mode=2) / Moderate (traffic=2).
-    Target = km_per_kwh_i / reference_efficiency, clipped to [FUZZY_FACTOR_MIN, FUZZY_FACTOR_MAX].
+    Target = efficiency factor x UAE thermal penalty, clipped to
+    [FUZZY_FACTOR_MIN, FUZZY_FACTOR_MAX].
     """
     dist = df["distance_travelled_km"].to_numpy(dtype=float)
     energy = df["energy_consumption_kwh"].to_numpy(dtype=float)
+    temp = df["temperature_c"].to_numpy(dtype=float)
+    ac_proxy = _derive_ac_proxy(temp)
 
     # Filter valid rows inline
     valid = (energy > 0) & (dist > 0)
@@ -107,6 +110,15 @@ def compute_training_target(df: pd.DataFrame) -> np.ndarray:
         ref_efficiency = float(np.nanmedian(ref_vals))
 
     target = km_per_kwh / ref_efficiency
+
+    # Add a bounded UAE thermal penalty so extreme heat and heavy cooling learn
+    # lower factors even though the dataset is not UAE-native and has no direct
+    # AC telemetry column.
+    temp_s = np.clip((temp - 35.0) / (52.0 - 35.0 + 1e-12), 0.0, 1.0)
+    ac_s = np.clip((ac_proxy - 3.0) / 7.0, 0.0, 1.0) ** 1.5
+    thermal_penalty = 1.0 - 0.25 * (0.7 * temp_s + 0.3 * ac_s)
+
+    target = target * thermal_penalty
     target = np.clip(target, FUZZY_FACTOR_MIN, FUZZY_FACTOR_MAX)
     return target.astype(float)
 
@@ -173,7 +185,13 @@ def lstsq_consequents(anfis: ANFIS, X_norm: np.ndarray, y: np.ndarray) -> np.nda
     # Build expanded regressor matrix Phi: (n_samples, n_rules * n_cols)
     Phi = (W_bar[:, :, None] * X_aug[:, None, :]).reshape(n_samples, anfis.n_rules * n_cols)
 
-    p_flat, _, _, _ = np.linalg.lstsq(Phi, y, rcond=None)
+    # Mild ridge regularization keeps the consequent weights from exploding and
+    # saturating the clipped ANFIS output.
+    ridge_lambda = 1e-2
+    gram = Phi.T @ Phi
+    regularized = gram + ridge_lambda * np.eye(gram.shape[0])
+    rhs = Phi.T @ y
+    p_flat = np.linalg.solve(regularized, rhs)
     return p_flat.reshape(anfis.n_rules, n_cols)
 
 

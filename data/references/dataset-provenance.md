@@ -14,3 +14,8 @@ data/raw/EV_Energy_Consumption_Dataset.csv
 ```
 
 The raw CSV is committed to this repository under that path.
+
+The same dataset is used for:
+- processed preview generation in `data/processed/EV_Range_Model_Processed.csv`
+- grouped efficiency lookup for `Shown Range`
+- optional ANFIS training for the hybrid neuro-fuzzy comparison

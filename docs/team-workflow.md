@@ -11,9 +11,10 @@
 2. Data loading and dataset validation
 3. Dataset-backed shown-range model
 4. Fuzzy UAE thermal correction
-4. Streamlit dashboard
-5. Tests and local verification
-6. Presentation polish
+5. Optional ANFIS / hybrid comparison layer
+6. Streamlit dashboard
+7. Tests and local verification
+8. Presentation polish
 
 ## Checklist Discipline
 - Move work into `In Progress` before implementation.
@@ -23,6 +24,7 @@
 ## Docs Freshness
 - Run `git config core.hooksPath .githooks` once per clone.
 - The pre-commit hook regenerates `data/processed/EV_Range_Model_Processed.csv` and `docs/repository-status.md`.
+- Keep `.codex/` files in the repo; they are part of the operating workflow, not temporary agent output.
 - Run `python3 scripts/build_processed_dataset.py` locally when preprocessing logic changes.
 - Run `python3 scripts/sync_project_docs.py` locally when repo facts change.
 - Manual doc updates should still be made when behavior, setup, or workflow changes.
@@ -31,6 +33,7 @@
 Use messages such as:
 - `chore: bootstrap project repository`
 - `feat: add fuzzy inference engine`
+- `feat: add hybrid neuro-fuzzy comparison`
 - `feat: build streamlit dashboard`
 - `docs: expand setup and project workflow`
 - `test: cover fuzzy range behavior`

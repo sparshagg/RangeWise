@@ -9,6 +9,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 STATUS_PATH = PROJECT_ROOT / "docs" / "repository-status.md"
 RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
 PROCESSED_DATA_DIR = PROJECT_ROOT / "data" / "processed"
+ANFIS_WEIGHTS_PATH = PROJECT_ROOT / "models" / "anfis_weights.json"
 
 
 def run_git(*args: str) -> str:
@@ -78,6 +79,8 @@ def build_status_markdown() -> str:
     branch = run_git("branch", "--show-current")
     header_preview = ", ".join(header[:8]) if header else "Unavailable"
     processed_header_preview = ", ".join(processed_header[:8]) if processed_header else "Unavailable"
+    anfis_status = "present" if ANFIS_WEIGHTS_PATH.exists() else "missing"
+    hooks_path = run_git("config", "--get", "core.hooksPath")
 
     return "\n".join(
         [
@@ -99,10 +102,15 @@ def build_status_markdown() -> str:
             f"- Processed column count: `{processed_column_count}`",
             f"- Processed header preview: `{processed_header_preview}`",
             "",
+            "## Models",
+            f"- ANFIS weights: `{ANFIS_WEIGHTS_PATH.relative_to(PROJECT_ROOT)}` ({anfis_status})",
+            "",
             "## Docs Freshness",
+            f"- Git hooks path: `{hooks_path}`",
             "- Generated docs are refreshed by `.githooks/pre-commit` before commits.",
             "- Run `python3 scripts/sync_project_docs.py` locally whenever repository facts change.",
             "- Run `python3 scripts/build_processed_dataset.py` locally when the preprocessing logic changes.",
+            "- Run `python3 scripts/train_anfis.py` locally whenever the committed hybrid weights need retraining.",
             "- Manual Markdown pages must still be updated when project behavior or workflow changes.",
             "",
         ]

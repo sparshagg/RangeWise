@@ -1,7 +1,7 @@
 # AGENTS
 
 ## Purpose
-- Build and maintain the Smart EV Range Predictor as a university project focused on fuzzy logic under UAE driving conditions.
+- Build and maintain the Smart EV Range Predictor as a university project focused on fuzzy logic under UAE driving conditions, with an optional hybrid neuro-fuzzy comparison layer.
 - Prefer explainability, clean demos, and strong documentation over advanced production features.
 
 ## Working Rules
@@ -17,6 +17,7 @@
 
 ## Project Constraints
 - Local-first Streamlit app only.
-- Fuzzy logic is the primary intelligence layer.
+- Keep the three-stage model explicit: claimed range, dataset-backed shown range, then fuzzy-only or hybrid correction.
+- Fuzzy logic is the primary explainable baseline layer; ANFIS is an optional comparative enhancement, not a separate production ML pipeline.
 - Dataset analysis supports the demo; it is not a separate ML pipeline.
 - Model behavior should remain presentation-friendly and easy to justify in class.

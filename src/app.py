@@ -85,7 +85,7 @@ def main() -> None:
     st.set_page_config(page_title="Smart EV Range Predictor", layout="wide")
     st.title("Smart EV Range Predictor")
     st.write(
-        "Estimate realistic EV range for UAE driving conditions using a dataset-backed shown-range stage plus a fuzzy UAE correction for heat and AC."
+        "Estimate realistic EV range for UAE driving conditions using a dataset-backed shown-range stage, an explainable fuzzy UAE correction, and an optional ANFIS hybrid comparison."
     )
 
     user_inputs = render_sidebar_controls()

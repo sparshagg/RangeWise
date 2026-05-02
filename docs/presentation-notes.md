@@ -14,12 +14,14 @@ Standard EV range displays can feel simplistic because they often do not reflect
 3. Show how speed, driving mode, and traffic create the dataset-backed shown range.
 4. Move the temperature from `Pleasant` to `Very Hot` or `Extremely Hot` and increase AC load.
 5. Show how the fuzzy UAE correction moves the final adjusted range above or below the shown range.
-6. Open the lookup details and speed-based dataset insights.
+6. If needed, compare the optional `Hybrid Range` and explain it as a weighted blend of fuzzy rules and ANFIS.
+7. Open the lookup details and speed-based dataset insights.
 
 ## Key Talking Points
 - The project separates normal efficiency behavior from UAE thermal uncertainty.
 - The dataset drives the shown range through grouped efficiency estimates.
 - Fuzzy logic models gradual transitions between pleasant, hot, very hot, and extremely hot conditions.
+- The optional ANFIS layer gives a neuro-fuzzy comparison without replacing the rule-based baseline.
 - The system is interpretable because each output comes from understandable rules.
 - The project uses a hybrid design: speed, mode, and traffic are dataset-backed, while UAE heat and AC remain domain-driven.
 - The project focuses on explainability and academic demonstration rather than production deployment.

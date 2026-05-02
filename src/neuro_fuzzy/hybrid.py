@@ -39,8 +39,8 @@ def compute_uae_severity(
     # Temperature component: ramp from 0 at 35°C to 1 at 52°C
     temp_s = max(0.0, min(1.0, (temperature - SEVERITY_TEMP_THRESHOLD) / (SEVERITY_TEMP_MAX - SEVERITY_TEMP_THRESHOLD)))
 
-    # AC component: quadratic to emphasise max-AC demand
-    ac_norm = max(0.0, min(1.0, ac_intensity / 10.0))
+    # AC component: low cabin cooling should not register as harsh UAE severity.
+    ac_norm = max(0.0, min(1.0, (ac_intensity - 3.0) / 7.0))
     ac_s = ac_norm ** 1.5
 
     # Speed component: ramp from 0 at 110 km/h to 1 at 160 km/h

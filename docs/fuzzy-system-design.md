@@ -1,13 +1,14 @@
-# Fuzzy System Design
+# Fuzzy And Hybrid System Design
 
 ## Objective
-The range model estimates EV range for real-world UAE driving conditions using a dataset-backed shown-range stage followed by a compact fuzzy UAE thermal correction. It is intentionally explainable so it can be defended in a classroom presentation.
+The range model estimates EV range for real-world UAE driving conditions using a dataset-backed shown-range stage followed by a compact fuzzy UAE correction. The merged `main` branch also contains an optional ANFIS comparison path so the team can present both the rule-based estimate and a hybrid neuro-fuzzy estimate.
 
 ## Modeling Strategy
 - Battery percentage determines the claimed remaining range directly.
 - The dataset computes a shown-range multiplier from `speed`, `driving mode`, and `traffic`.
 - Fuzzy logic then adjusts that shown range using UAE `temperature`, `AC`, `speed`, `driving mode`, and `traffic`.
-- The output is three range values: claimed, shown, and adjusted.
+- If ANFIS weights are present, a severity-weighted hybrid combiner also produces `Hybrid Range`.
+- The output is three or four range values: claimed, shown, fuzzy-only adjusted, and optional hybrid adjusted.
 
 ## Hybrid Design Choice
 - `Ambient Temperature` and `AC Intensity` stay as explicit UAE demo inputs because they are central to the classroom problem statement.
@@ -16,6 +17,7 @@ The range model estimates EV range for real-world UAE driving conditions using a
 - The dataset is not UAE-native and has no AC column, so heat and AC remain domain-driven rather than learned directly.
 - The dataset has no direct samples above `120 km/h`, so `Fast Highway` and `Extreme Highway` use the nearest highway bucket with an additional explicit high-speed penalty.
 - Speed, mode, and traffic also stay in the fuzzy stage so the final correction can respond to gray-area combinations rather than behaving like a fixed lookup only.
+- ANFIS is not the primary classroom story. It is a comparative enhancement that learns an additional factor from the processed dataset and is blended with the fuzzy factor for a `Hybrid Range`.
 
 ## Inputs
 ### Battery Percentage
@@ -78,11 +80,24 @@ Suggested operating interpretation:
 
 ## Fuzzy Output
 ### Fuzzy UAE Adjustment Factor
-Thermal factor applied to the shown range:
+Fuzzy factor applied to the shown range:
 - bounded between `0.82` and `1.08`
 - allows modest uplift for `Pleasant + Low AC`
 - applies stronger reductions for `Very Hot` or `Extremely Hot` with higher AC
 - also changes across `speed`, `driving mode`, and `traffic` so the fuzzy factor does not stay flat when those conditions change
+
+## ANFIS / Hybrid Output
+- ANFIS input features:
+  - `temperature_c`
+  - derived `ac_intensity`
+  - `speed_kmh`
+  - numeric `driving_mode`
+  - numeric `traffic_level`
+- ANFIS learns an additional factor from the dataset using normalized inputs and a first-order Sugeno structure.
+- The hybrid combiner shifts weight between fuzzy and ANFIS based on UAE severity:
+  - mild conditions favor fuzzy rules
+  - harsh heat, AC demand, and high speed give ANFIS more weight
+- The hybrid output is capped with the same realism bound as the fuzzy-only output.
 
 ## Rule Themes
 - Dataset stage:
@@ -104,4 +119,5 @@ Thermal factor applied to the shown range:
 ## Why This Fits The Course
 - Uses fuzzy sets and linguistic rules rather than fixed thresholds
 - Uses the dataset to quantify normal efficiency conditions and fuzzy logic to handle thermal gray areas
+- Also demonstrates a lightweight neuro-fuzzy comparison without turning the project into a full ML deployment
 - Produces interpretable outputs that are easy to explain

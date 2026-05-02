@@ -30,13 +30,17 @@ class ANFIS:
         bounds = ANFIS_INPUT_BOUNDS[:n_inputs]
         init_c = ANFIS_INIT_CENTERS[:n_inputs]
 
-        self.centers = np.array(init_c, dtype=float)  # (n_inputs, n_mfs)
-
-        # Initial sigma = universe_range / (2 * n_mfs) — ensures MFs overlap well
-        self.sigmas = np.array(
-            [[(hi - lo) / (2.0 * n_mfs) for _ in range(n_mfs)] for lo, hi in bounds],
+        # Normalize warm-start centers to the [0, 1] ANFIS input space used by forward().
+        self.centers = np.array(
+            [
+                [(center - lo) / (hi - lo + 1e-12) for center in centers]
+                for centers, (lo, hi) in zip(init_c, bounds)
+            ],
             dtype=float,
-        )  # (n_inputs, n_mfs)
+        )
+
+        # Inputs are normalized to [0, 1], so sigma must also start in normalized units.
+        self.sigmas = np.full((n_inputs, n_mfs), 1.0 / (2.0 * n_mfs), dtype=float)
 
         # Sugeno consequent matrix: (n_rules, n_inputs + 1) — bias + linear coefficients
         self.P = np.zeros((self.n_rules, n_inputs + 1), dtype=float)
@@ -120,8 +124,9 @@ class ANFIS:
         """Restore centers and sigmas from flat vector."""
         split = self.n_inputs * self.n_mfs
         self.centers = params[:split].reshape(self.n_inputs, self.n_mfs)
-        # Enforce σ > 0 via abs to avoid divide-by-zero
-        self.sigmas = np.abs(params[split:]).reshape(self.n_inputs, self.n_mfs) + 1e-6
+        sigma_params = params[split:].reshape(self.n_inputs, self.n_mfs)
+        # Preserve valid positive sigmas exactly so parameter round-trips remain stable.
+        self.sigmas = np.where(sigma_params > 1e-6, sigma_params, np.abs(sigma_params) + 1e-6)
 
     # ------------------------------------------------------------------
     # Persistence
